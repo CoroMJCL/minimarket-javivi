@@ -12,10 +12,12 @@ const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE);
 const hashPassword = async (pw) => {
   const enc = new TextEncoder().encode(pw);
   const buf = await crypto.subtle.digest("SHA-256", enc);
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 };
-const fmtPuntos = (n) => Number(n||0).toLocaleString("es-CL");
-const fmtPeso = (n) => `$${Number(n||0).toLocaleString("es-CL")}`;
+const fmtPuntos = (n) => Number(n || 0).toLocaleString("es-CL");
+const fmtPeso = (n) => `$${Number(n || 0).toLocaleString("es-CL")}`;
 
 const G = "#0f4a2c";
 const GM = "#16a34a";
@@ -23,64 +25,379 @@ const GL = "#4ade80";
 
 // ── LOGO SVG INLINE ──────────────────────────────────────────
 const LogoSVG = ({ size = 56 }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width={size} height={size}>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 500 500"
+    width={size}
+    height={size}
+  >
     <defs>
-      <radialGradient id="bgC" cx="40%" cy="35%" r="65%"><stop offset="0%" stopColor="#ffffff"/><stop offset="100%" stopColor="#f0faf3"/></radialGradient>
-      <linearGradient id="cG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#52e07c"/><stop offset="50%" stopColor="#22c55e"/><stop offset="100%" stopColor="#15803d"/></linearGradient>
-      <linearGradient id="cDG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#1ea550"/><stop offset="100%" stopColor="#14532d"/></linearGradient>
-      <linearGradient id="lL" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#86efac"/><stop offset="45%" stopColor="#22c55e"/><stop offset="100%" stopColor="#14532d"/></linearGradient>
-      <linearGradient id="lR" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="#a7f3c4"/><stop offset="45%" stopColor="#16a34a"/><stop offset="100%" stopColor="#14532d"/></linearGradient>
-      <linearGradient id="lT" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#bbf7d0"/><stop offset="100%" stopColor="#16a34a"/></linearGradient>
-      <linearGradient id="sh" x1="10%" y1="0%" x2="60%" y2="80%"><stop offset="0%" stopColor="#ffffff" stopOpacity="0.55"/><stop offset="100%" stopColor="#ffffff" stopOpacity="0"/></linearGradient>
-      <linearGradient id="rA" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#22c55e" stopOpacity="0.7"/><stop offset="40%" stopColor="#86efac" stopOpacity="0.3"/><stop offset="100%" stopColor="#15803d" stopOpacity="0.6"/></linearGradient>
-      <linearGradient id="lnG" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stopColor="#22c55e" stopOpacity="0"/><stop offset="30%" stopColor="#22c55e" stopOpacity="0.6"/><stop offset="70%" stopColor="#22c55e" stopOpacity="0.6"/><stop offset="100%" stopColor="#22c55e" stopOpacity="0"/></linearGradient>
-      <filter id="lG" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      <filter id="cS" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="7" floodColor="#15803d" floodOpacity="0.2"/></filter>
-      <filter id="wF"><feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#14532d" floodOpacity="0.18"/></filter>
-      <filter id="tF"><feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#14532d" floodOpacity="0.12"/></filter>
-      <filter id="circF" x="-5%" y="-5%" width="110%" height="110%"><feDropShadow dx="0" dy="6" stdDeviation="12" floodColor="#15803d" floodOpacity="0.14"/></filter>
-      <clipPath id="inn"><circle cx="250" cy="250" r="232"/></clipPath>
+      <radialGradient id="bgC" cx="40%" cy="35%" r="65%">
+        <stop offset="0%" stopColor="#ffffff" />
+        <stop offset="100%" stopColor="#f0faf3" />
+      </radialGradient>
+      <linearGradient id="cG" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#52e07c" />
+        <stop offset="50%" stopColor="#22c55e" />
+        <stop offset="100%" stopColor="#15803d" />
+      </linearGradient>
+      <linearGradient id="cDG" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#1ea550" />
+        <stop offset="100%" stopColor="#14532d" />
+      </linearGradient>
+      <linearGradient id="lL" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#86efac" />
+        <stop offset="45%" stopColor="#22c55e" />
+        <stop offset="100%" stopColor="#14532d" />
+      </linearGradient>
+      <linearGradient id="lR" x1="100%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#a7f3c4" />
+        <stop offset="45%" stopColor="#16a34a" />
+        <stop offset="100%" stopColor="#14532d" />
+      </linearGradient>
+      <linearGradient id="lT" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#bbf7d0" />
+        <stop offset="100%" stopColor="#16a34a" />
+      </linearGradient>
+      <linearGradient id="sh" x1="10%" y1="0%" x2="60%" y2="80%">
+        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
+        <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+      </linearGradient>
+      <linearGradient id="rA" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#22c55e" stopOpacity="0.7" />
+        <stop offset="40%" stopColor="#86efac" stopOpacity="0.3" />
+        <stop offset="100%" stopColor="#15803d" stopOpacity="0.6" />
+      </linearGradient>
+      <linearGradient id="lnG" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#22c55e" stopOpacity="0" />
+        <stop offset="30%" stopColor="#22c55e" stopOpacity="0.6" />
+        <stop offset="70%" stopColor="#22c55e" stopOpacity="0.6" />
+        <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
+      </linearGradient>
+      <filter id="lG" x="-25%" y="-25%" width="150%" height="150%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b" />
+        <feMerge>
+          <feMergeNode in="b" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+      <filter id="cS" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow
+          dx="0"
+          dy="4"
+          stdDeviation="7"
+          floodColor="#15803d"
+          floodOpacity="0.2"
+        />
+      </filter>
+      <filter id="wF">
+        <feDropShadow
+          dx="0"
+          dy="3"
+          stdDeviation="4"
+          floodColor="#14532d"
+          floodOpacity="0.18"
+        />
+      </filter>
+      <filter id="tF">
+        <feDropShadow
+          dx="0"
+          dy="1"
+          stdDeviation="2"
+          floodColor="#14532d"
+          floodOpacity="0.12"
+        />
+      </filter>
+      <filter id="circF" x="-5%" y="-5%" width="110%" height="110%">
+        <feDropShadow
+          dx="0"
+          dy="6"
+          stdDeviation="12"
+          floodColor="#15803d"
+          floodOpacity="0.14"
+        />
+      </filter>
+      <clipPath id="inn">
+        <circle cx="250" cy="250" r="232" />
+      </clipPath>
     </defs>
-    <g filter="url(#circF)"><circle cx="250" cy="250" r="240" fill="url(#bgC)"/></g>
-    <circle cx="250" cy="250" r="240" fill="none" stroke="#dcfce7" strokeWidth="4"/>
-    <circle cx="250" cy="250" r="235" fill="none" stroke="url(#rA)" strokeWidth="2"/>
-    <circle cx="250" cy="250" r="226" fill="none" stroke="url(#rA)" strokeWidth="0.8" strokeDasharray="6 12" opacity="0.7"/>
+    <g filter="url(#circF)">
+      <circle cx="250" cy="250" r="240" fill="url(#bgC)" />
+    </g>
+    <circle
+      cx="250"
+      cy="250"
+      r="240"
+      fill="none"
+      stroke="#dcfce7"
+      strokeWidth="4"
+    />
+    <circle
+      cx="250"
+      cy="250"
+      r="235"
+      fill="none"
+      stroke="url(#rA)"
+      strokeWidth="2"
+    />
+    <circle
+      cx="250"
+      cy="250"
+      r="226"
+      fill="none"
+      stroke="url(#rA)"
+      strokeWidth="0.8"
+      strokeDasharray="6 12"
+      opacity="0.7"
+    />
     <g clipPath="url(#inn)">
-      <circle cx="200" cy="180" r="180" fill="#f0fdf4" opacity="0.45"/>
-      <g><rect x="30" y="132" width="58" height="9.5" rx="4.75" fill="url(#cG)"/><rect x="43" y="152" width="42" height="8" rx="4" fill="url(#cG)" opacity="0.65"/><rect x="56" y="170" width="28" height="6.5" rx="3.25" fill="url(#cG)" opacity="0.38"/></g>
+      <circle cx="200" cy="180" r="180" fill="#f0fdf4" opacity="0.45" />
+      <g>
+        <rect
+          x="30"
+          y="132"
+          width="58"
+          height="9.5"
+          rx="4.75"
+          fill="url(#cG)"
+        />
+        <rect
+          x="43"
+          y="152"
+          width="42"
+          height="8"
+          rx="4"
+          fill="url(#cG)"
+          opacity="0.65"
+        />
+        <rect
+          x="56"
+          y="170"
+          width="28"
+          height="6.5"
+          rx="3.25"
+          fill="url(#cG)"
+          opacity="0.38"
+        />
+      </g>
       <g filter="url(#cS)">
-        <line x1="106" y1="118" x2="366" y2="118" stroke="url(#cG)" strokeWidth="16" strokeLinecap="round"/>
-        <line x1="106" y1="118" x2="106" y2="146" stroke="url(#cG)" strokeWidth="16" strokeLinecap="round"/>
-        <path d="M106 146 L128 228 L358 228 L378 146" fill="none" stroke="url(#cG)" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round"/>
-        <line x1="128" y1="228" x2="358" y2="228" stroke="url(#cDG)" strokeWidth="14" strokeLinecap="round"/>
-        <line x1="148" y1="228" x2="139" y2="256" stroke="url(#cDG)" strokeWidth="13" strokeLinecap="round"/>
-        <line x1="336" y1="228" x2="346" y2="256" stroke="url(#cDG)" strokeWidth="13" strokeLinecap="round"/>
-        <g filter="url(#wF)"><circle cx="151" cy="276" r="21" fill="white" stroke="url(#cDG)" strokeWidth="11"/><circle cx="151" cy="276" r="9" fill="none" stroke="url(#cG)" strokeWidth="2.5" opacity="0.5"/><circle cx="151" cy="276" r="4.5" fill="url(#cG)"/></g>
-        <g filter="url(#wF)"><circle cx="325" cy="276" r="21" fill="white" stroke="url(#cDG)" strokeWidth="11"/><circle cx="325" cy="276" r="9" fill="none" stroke="url(#cG)" strokeWidth="2.5" opacity="0.5"/><circle cx="325" cy="276" r="4.5" fill="url(#cG)"/></g>
+        <line
+          x1="106"
+          y1="118"
+          x2="366"
+          y2="118"
+          stroke="url(#cG)"
+          strokeWidth="16"
+          strokeLinecap="round"
+        />
+        <line
+          x1="106"
+          y1="118"
+          x2="106"
+          y2="146"
+          stroke="url(#cG)"
+          strokeWidth="16"
+          strokeLinecap="round"
+        />
+        <path
+          d="M106 146 L128 228 L358 228 L378 146"
+          fill="none"
+          stroke="url(#cG)"
+          strokeWidth="14"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <line
+          x1="128"
+          y1="228"
+          x2="358"
+          y2="228"
+          stroke="url(#cDG)"
+          strokeWidth="14"
+          strokeLinecap="round"
+        />
+        <line
+          x1="148"
+          y1="228"
+          x2="139"
+          y2="256"
+          stroke="url(#cDG)"
+          strokeWidth="13"
+          strokeLinecap="round"
+        />
+        <line
+          x1="336"
+          y1="228"
+          x2="346"
+          y2="256"
+          stroke="url(#cDG)"
+          strokeWidth="13"
+          strokeLinecap="round"
+        />
+        <g filter="url(#wF)">
+          <circle
+            cx="151"
+            cy="276"
+            r="21"
+            fill="white"
+            stroke="url(#cDG)"
+            strokeWidth="11"
+          />
+          <circle
+            cx="151"
+            cy="276"
+            r="9"
+            fill="none"
+            stroke="url(#cG)"
+            strokeWidth="2.5"
+            opacity="0.5"
+          />
+          <circle cx="151" cy="276" r="4.5" fill="url(#cG)" />
+        </g>
+        <g filter="url(#wF)">
+          <circle
+            cx="325"
+            cy="276"
+            r="21"
+            fill="white"
+            stroke="url(#cDG)"
+            strokeWidth="11"
+          />
+          <circle
+            cx="325"
+            cy="276"
+            r="9"
+            fill="none"
+            stroke="url(#cG)"
+            strokeWidth="2.5"
+            opacity="0.5"
+          />
+          <circle cx="325" cy="276" r="4.5" fill="url(#cG)" />
+        </g>
       </g>
-      <line x1="250" y1="186" x2="250" y2="118" stroke="#16a34a" strokeWidth="5.5" strokeLinecap="round"/>
+      <line
+        x1="250"
+        y1="186"
+        x2="250"
+        y2="118"
+        stroke="#16a34a"
+        strokeWidth="5.5"
+        strokeLinecap="round"
+      />
       <g filter="url(#lG)">
-        <path d="M250 184 C236 155 204 122 160 112 C174 127 198 144 213 168 C226 186 242 192 250 184 Z" fill="url(#lL)"/>
-        <path d="M250 184 C236 155 204 122 160 112 C174 127 198 144 213 168 C226 186 242 192 250 184 Z" fill="url(#sh)"/>
-        <path d="M250 184 C226 160 196 132 162 114" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M238 180 C226 164 210 148 194 136" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" strokeLinecap="round"/>
+        <path
+          d="M250 184 C236 155 204 122 160 112 C174 127 198 144 213 168 C226 186 242 192 250 184 Z"
+          fill="url(#lL)"
+        />
+        <path
+          d="M250 184 C236 155 204 122 160 112 C174 127 198 144 213 168 C226 186 242 192 250 184 Z"
+          fill="url(#sh)"
+        />
+        <path
+          d="M250 184 C226 160 196 132 162 114"
+          fill="none"
+          stroke="rgba(255,255,255,0.55)"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <path
+          d="M238 180 C226 164 210 148 194 136"
+          fill="none"
+          stroke="rgba(255,255,255,0.25)"
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
       </g>
       <g filter="url(#lG)">
-        <path d="M250 184 C264 152 300 118 346 106 C330 122 306 140 292 164 C276 184 260 192 250 184 Z" fill="url(#lR)"/>
-        <path d="M250 184 C264 152 300 118 346 106 C330 122 306 140 292 164 C276 184 260 192 250 184 Z" fill="url(#sh)"/>
-        <path d="M250 184 C274 158 306 126 344 108" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M262 180 C276 164 292 148 308 136" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" strokeLinecap="round"/>
+        <path
+          d="M250 184 C264 152 300 118 346 106 C330 122 306 140 292 164 C276 184 260 192 250 184 Z"
+          fill="url(#lR)"
+        />
+        <path
+          d="M250 184 C264 152 300 118 346 106 C330 122 306 140 292 164 C276 184 260 192 250 184 Z"
+          fill="url(#sh)"
+        />
+        <path
+          d="M250 184 C274 158 306 126 344 108"
+          fill="none"
+          stroke="rgba(255,255,255,0.55)"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <path
+          d="M262 180 C276 164 292 148 308 136"
+          fill="none"
+          stroke="rgba(255,255,255,0.25)"
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
       </g>
       <g filter="url(#lG)" transform="translate(306,64) rotate(-26)">
-        <path d="M0 38 C-4 18 10 1 32 0 C22 10 12 22 7 38 Z" fill="url(#lT)"/>
-        <path d="M0 38 C-4 18 10 1 32 0 C22 10 12 22 7 38 Z" fill="url(#sh)"/>
-        <path d="M0 38 C7 22 18 8 31 1" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.3" strokeLinecap="round"/>
+        <path d="M0 38 C-4 18 10 1 32 0 C22 10 12 22 7 38 Z" fill="url(#lT)" />
+        <path d="M0 38 C-4 18 10 1 32 0 C22 10 12 22 7 38 Z" fill="url(#sh)" />
+        <path
+          d="M0 38 C7 22 18 8 31 1"
+          fill="none"
+          stroke="rgba(255,255,255,0.45)"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+        />
       </g>
-      <line x1="80" y1="306" x2="420" y2="306" stroke="url(#lnG)" strokeWidth="1.2"/>
-      <text x="250" y="330" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="700" fill="#16a34a" textAnchor="middle" letterSpacing="6" opacity="0.75">MINIMARKET</text>
-      <text x="250" y="392" fontFamily="Arial Black, Arial Bold, Impact, sans-serif" fontSize="76" fontWeight="900" fill="#14532d" textAnchor="middle" letterSpacing="4" filter="url(#tF)">JAVIVI</text>
-      <rect x="112" y="400" width="276" height="3" rx="1.5" fill="url(#lnG)" opacity="0.9"/>
-      <text x="250" y="426" fontFamily="Arial, Helvetica, sans-serif" fontSize="13" fontWeight="600" fill="#15803d" textAnchor="middle" letterSpacing="1.8">Abarrotes · Frutas &amp; Verduras</text>
+      <line
+        x1="80"
+        y1="306"
+        x2="420"
+        y2="306"
+        stroke="url(#lnG)"
+        strokeWidth="1.2"
+      />
+      <text
+        x="250"
+        y="330"
+        fontFamily="Arial, Helvetica, sans-serif"
+        fontSize="11"
+        fontWeight="700"
+        fill="#16a34a"
+        textAnchor="middle"
+        letterSpacing="6"
+        opacity="0.75"
+      >
+        MINIMARKET
+      </text>
+      <text
+        x="250"
+        y="392"
+        fontFamily="Arial Black, Arial Bold, Impact, sans-serif"
+        fontSize="76"
+        fontWeight="900"
+        fill="#14532d"
+        textAnchor="middle"
+        letterSpacing="4"
+        filter="url(#tF)"
+      >
+        JAVIVI
+      </text>
+      <rect
+        x="112"
+        y="400"
+        width="276"
+        height="3"
+        rx="1.5"
+        fill="url(#lnG)"
+        opacity="0.9"
+      />
+      <text
+        x="250"
+        y="426"
+        fontFamily="Arial, Helvetica, sans-serif"
+        fontSize="13"
+        fontWeight="600"
+        fill="#15803d"
+        textAnchor="middle"
+        letterSpacing="1.8"
+      >
+        Abarrotes · Frutas &amp; Verduras
+      </text>
     </g>
   </svg>
 );
@@ -292,14 +609,25 @@ const css = `
 `;
 
 function Toast({ msg, onClose }) {
-  useEffect(() => { const t = setTimeout(onClose, 3200); return () => clearTimeout(t); }, []);
+  useEffect(() => {
+    const t = setTimeout(onClose, 3200);
+    return () => clearTimeout(t);
+  }, []);
   return <div className="toast">{msg}</div>;
 }
 
 function WAFloat() {
   return (
-    <a className="wa-float" href={`https://wa.me/${WHATSAPP}?text=Hola%20Minimarket%20Javivi%2C%20tengo%20una%20consulta%20sobre%20el%20cat%C3%A1logo%20de%20puntos`} target="_blank" rel="noreferrer" title="WhatsApp">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <a
+      className="wa-float"
+      href={`https://wa.me/${WHATSAPP}?text=Hola%20Minimarket%20Javivi%2C%20tengo%20una%20consulta%20sobre%20el%20cat%C3%A1logo%20de%20puntos`}
+      target="_blank"
+      rel="noreferrer"
+      title="WhatsApp"
+    >
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+      </svg>
     </a>
   );
 }
@@ -307,21 +635,37 @@ function WAFloat() {
 function Landing({ productos, categorias, promos }) {
   const [catSel, setCatSel] = useState("all");
   const [search, setSearch] = useState("");
-  const [form, setForm] = useState({ nombre: "", email: "", tipo: "consulta", mensaje: "" });
+  const [form, setForm] = useState({
+    nombre: "",
+    email: "",
+    tipo: "consulta",
+    mensaje: "",
+  });
   const [sending, setSending] = useState(false);
   const [toast, setToast] = useState(null);
   const catalogRef = useRef(null);
   const contactRef = useRef(null);
 
-  const filtered = productos.filter(p =>
-    (catSel === "all" || p.categoria_id === catSel) &&
-    p.nombre.toLowerCase().includes(search.toLowerCase())
+  const filtered = productos.filter(
+    (p) =>
+      (catSel === "all" || p.categoria_id === catSel) &&
+      p.nombre.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleContact = async () => {
-    if (!form.nombre.trim() || !form.mensaje.trim()) { setToast("Por favor completa tu nombre y mensaje."); return; }
+    if (!form.nombre.trim() || !form.mensaje.trim()) {
+      setToast("Por favor completa tu nombre y mensaje.");
+      return;
+    }
     setSending(true);
-    await supabase.from("contacto_mensajes").insert({ nombre_contacto: form.nombre, email_contacto: form.email, tipo: form.tipo, mensaje: form.mensaje });
+    await supabase
+      .from("contacto_mensajes")
+      .insert({
+        nombre_contacto: form.nombre,
+        email_contacto: form.email,
+        tipo: form.tipo,
+        mensaje: form.mensaje,
+      });
     setForm({ nombre: "", email: "", tipo: "consulta", mensaje: "" });
     setToast("¡Mensaje enviado! Te respondemos pronto 💬");
     setSending(false);
@@ -333,38 +677,96 @@ function Landing({ productos, categorias, promos }) {
     <>
       {/* HERO */}
       <section className="hero">
-        <div className="orb orb-1"/><div className="orb orb-2"/>
+        <div className="orb orb-1" />
+        <div className="orb orb-2" />
         <div className="hero-inner">
-          <div style={{ marginBottom: 28 }}><LogoSVG size={108}/></div>
-          <div className="eyebrow"><div className="eyebrow-dot"/>Sistema de Puntos</div>
-          <h1>Tu fidelidad tiene<br/><em>recompensa real</em></h1>
-          <p className="hero-sub">Acumula puntos con cada compra en Minimarket Javivi y canjéalos por productos del catálogo directamente en tienda.</p>
+          <div style={{ marginBottom: 28 }}>
+            <LogoSVG size={108} />
+          </div>
+          <div className="eyebrow">
+            <div className="eyebrow-dot" />
+            Sistema de Puntos
+          </div>
+          <h1>
+            Tu fidelidad tiene
+            <br />
+            <em>recompensa real</em>
+          </h1>
+          <p className="hero-sub">
+            Acumula puntos con cada compra en Minimarket Javivi y canjéalos por
+            productos del catálogo directamente en tienda.
+          </p>
           <div className="hero-btns">
-            <button className="btn-primary" onClick={() => scrollTo(catalogRef)}>Ver catálogo →</button>
-            <button className="btn-ghost" onClick={() => scrollTo(contactRef)}>Contacto</button>
+            <button
+              className="btn-primary"
+              onClick={() => scrollTo(catalogRef)}
+            >
+              Ver catálogo →
+            </button>
+            <button className="btn-ghost" onClick={() => scrollTo(contactRef)}>
+              Contacto
+            </button>
           </div>
           <div className="hero-stats">
-            <div className="stat"><div className="stat-num">{productos.length}</div><div className="stat-lbl">Productos</div></div>
-            <div className="stat-div"/>
-            <div className="stat"><div className="stat-num">{categorias.length}</div><div className="stat-lbl">Categorías</div></div>
-            <div className="stat-div"/>
-            <div className="stat"><div className="stat-num">Gratis</div><div className="stat-lbl">Sin costo</div></div>
+            <div className="stat">
+              <div className="stat-num">{productos.length}</div>
+              <div className="stat-lbl">Productos</div>
+            </div>
+            <div className="stat-div" />
+            <div className="stat">
+              <div className="stat-num">{categorias.length}</div>
+              <div className="stat-lbl">Categorías</div>
+            </div>
+            <div className="stat-div" />
+            <div className="stat">
+              <div className="stat-num">Gratis</div>
+              <div className="stat-lbl">Sin costo</div>
+            </div>
           </div>
         </div>
       </section>
 
-      <div className="divider"/>
+      <div className="divider" />
 
       {/* CÓMO FUNCIONA */}
       <section className="section how-section">
         <div className="section-inner">
           <div className="section-header">
-            <div className="s-eyebrow" style={{ color: "#4ade80" }}>Simple y transparente</div>
-            <h2 className="s-title" style={{ color: "white" }}>¿Cómo funciona?</h2>
+            <div className="s-eyebrow" style={{ color: "#4ade80" }}>
+              Simple y transparente
+            </div>
+            <h2 className="s-title" style={{ color: "white" }}>
+              ¿Cómo funciona?
+            </h2>
           </div>
           <div className="how-grid">
-            {[["01","Compra en Javivi","Realiza tus compras habituales. Cada vez que compras en el minimarket, acumulas puntos automáticamente."],["02","Acumula puntos","Tu saldo de puntos crece con cada visita. Consulta en tienda cuántos puntos tienes disponibles."],["03","Elige tu premio","Revisa este catálogo y escoge el producto que más te guste según tus puntos actuales."],["04","Canjea en tienda","Visítanos con tu nombre y solicita el canje. Sin apps, sin formularios, sin complicaciones."]].map(([n,t,d]) => (
-              <div className="how-item" key={n}><div className="how-num">{n}</div><div className="how-title">{t}</div><div className="how-desc">{d}</div></div>
+            {[
+              [
+                "01",
+                "Compra en Javivi",
+                "Realiza tus compras habituales. Cada vez que compras en el minimarket, acumulas puntos automáticamente.",
+              ],
+              [
+                "02",
+                "Acumula puntos",
+                "Tu saldo de puntos crece con cada visita. Consulta en tienda cuántos puntos tienes disponibles.",
+              ],
+              [
+                "03",
+                "Elige tu premio",
+                "Revisa este catálogo y escoge el producto que más te guste según tus puntos actuales.",
+              ],
+              [
+                "04",
+                "Canjea en tienda",
+                "Visítanos con tu nombre y solicita el canje. Sin apps, sin formularios, sin complicaciones.",
+              ],
+            ].map(([n, t, d]) => (
+              <div className="how-item" key={n}>
+                <div className="how-num">{n}</div>
+                <div className="how-title">{t}</div>
+                <div className="how-desc">{d}</div>
+              </div>
             ))}
           </div>
         </div>
@@ -373,7 +775,7 @@ function Landing({ productos, categorias, promos }) {
       {/* PROMOCIONES */}
       {promos.length > 0 && (
         <>
-          <div className="divider"/>
+          <div className="divider" />
           <section className="section promo-section">
             <div className="section-inner">
               <div className="section-header">
@@ -382,16 +784,39 @@ function Landing({ productos, categorias, promos }) {
                 <p className="s-sub">Precios especiales por tiempo limitado</p>
               </div>
               <div className="promo-grid">
-                {promos.map(p => (
+                {promos.map((p) => (
                   <div className="promo-card" key={p.id}>
-                    <div className="promo-img">{p.foto_url ? <img src={p.foto_url} alt={p.nombre}/> : "🔥"}</div>
+                    <div className="promo-img">
+                      {p.foto_url ? (
+                        <img src={p.foto_url} alt={p.nombre} />
+                      ) : (
+                        "🔥"
+                      )}
+                    </div>
                     <div className="promo-body">
                       <span className="promo-tag">OFERTA</span>
                       <div className="promo-name">{p.nombre}</div>
-                      {p.descripcion && <p style={{ fontSize: 13, color: "#6b7280", marginTop: 4, lineHeight: 1.5 }}>{p.descripcion}</p>}
+                      {p.descripcion && (
+                        <p
+                          style={{
+                            fontSize: 13,
+                            color: "#6b7280",
+                            marginTop: 4,
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {p.descripcion}
+                        </p>
+                      )}
                       <div className="promo-prices">
-                        {p.precio_original && <span className="price-old">{fmtPeso(p.precio_original)}</span>}
-                        <span className="price-new">{fmtPeso(p.precio_oferta)}</span>
+                        {p.precio_original && (
+                          <span className="price-old">
+                            {fmtPeso(p.precio_original)}
+                          </span>
+                        )}
+                        <span className="price-new">
+                          {fmtPeso(p.precio_oferta)}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -402,7 +827,7 @@ function Landing({ productos, categorias, promos }) {
         </>
       )}
 
-      <div className="divider"/>
+      <div className="divider" />
 
       {/* CATÁLOGO */}
       <section className="section" ref={catalogRef} id="catalogo-section">
@@ -410,78 +835,198 @@ function Landing({ productos, categorias, promos }) {
           <div className="section-header">
             <div className="s-eyebrow">Catálogo de canje</div>
             <h2 className="s-title">¿Qué puedes canjear?</h2>
-            <p className="s-sub">Consulta tus puntos en tienda y escoge tu premio favorito</p>
+            <p className="s-sub">
+              Consulta tus puntos en tienda y escoge tu premio favorito
+            </p>
           </div>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: 28,
+            }}
+          >
             <div style={{ position: "relative", width: "100%", maxWidth: 380 }}>
-              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#9ca3af" }}>🔍</span>
-              <input className="form-input" placeholder="Buscar producto..." value={search} onChange={e => setSearch(e.target.value)} style={{ paddingLeft: 40 }}/>
+              <span
+                style={{
+                  position: "absolute",
+                  left: 14,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  color: "#9ca3af",
+                }}
+              >
+                🔍
+              </span>
+              <input
+                className="form-input"
+                placeholder="Buscar producto..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{ paddingLeft: 40 }}
+              />
             </div>
           </div>
           <div className="filters">
-            <button className={`f-btn ${catSel === "all" ? "active" : ""}`} onClick={() => setCatSel("all")}>Todos</button>
-            {categorias.map(c => (
-              <button key={c.id} className={`f-btn ${catSel === c.id ? "active" : ""}`} onClick={() => setCatSel(c.id)}>{c.icono} {c.nombre}</button>
+            <button
+              className={`f-btn ${catSel === "all" ? "active" : ""}`}
+              onClick={() => setCatSel("all")}
+            >
+              Todos
+            </button>
+            {categorias.map((c) => (
+              <button
+                key={c.id}
+                className={`f-btn ${catSel === c.id ? "active" : ""}`}
+                onClick={() => setCatSel(c.id)}
+              >
+                {c.icono} {c.nombre}
+              </button>
             ))}
           </div>
           <div className="products-grid">
             {filtered.length === 0 ? (
-              <div className="empty"><div>🔍</div><p>No se encontraron productos.</p></div>
-            ) : filtered.map(p => (
-              <div className="prod-card" key={p.id}>
-                {p.destacado && <div className="dest-badge">DESTACADO</div>}
-                <div className="prod-img">
-                  {p.foto_url ? <img src={p.foto_url} alt={p.nombre}/> : <div className="prod-placeholder">🎁</div>}
-                </div>
-                <div className="prod-body">
-                  {p.categorias?.nombre && <div className="prod-cat">{p.categorias.icono} {p.categorias.nombre}</div>}
-                  <div className="prod-name">{p.nombre}</div>
-                  {p.descripcion && <div className="prod-desc">{p.descripcion}</div>}
-                  <div className="pts-badge">⭐ {fmtPuntos(p.puntos_requeridos)} puntos</div>
-                </div>
+              <div className="empty">
+                <div>🔍</div>
+                <p>No se encontraron productos.</p>
               </div>
-            ))}
+            ) : (
+              filtered.map((p) => (
+                <div className="prod-card" key={p.id}>
+                  {p.destacado && <div className="dest-badge">DESTACADO</div>}
+                  <div className="prod-img">
+                    {p.foto_url ? (
+                      <img src={p.foto_url} alt={p.nombre} />
+                    ) : (
+                      <div className="prod-placeholder">🎁</div>
+                    )}
+                  </div>
+                  <div className="prod-body">
+                    {p.categorias?.nombre && (
+                      <div className="prod-cat">
+                        {p.categorias.icono} {p.categorias.nombre}
+                      </div>
+                    )}
+                    <div className="prod-name">{p.nombre}</div>
+                    {p.descripcion && (
+                      <div className="prod-desc">{p.descripcion}</div>
+                    )}
+                    <div className="pts-badge">
+                      ⭐ {fmtPuntos(p.puntos_requeridos)} puntos
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>
 
-      <div className="divider"/>
+      <div className="divider" />
 
       {/* CONTACTO */}
-      <section className="section contact-section" ref={contactRef} id="contacto-section">
+      <section
+        className="section contact-section"
+        ref={contactRef}
+        id="contacto-section"
+      >
         <div className="section-inner">
           <div className="section-header">
             <div className="s-eyebrow">Estamos para ti</div>
             <h2 className="s-title">Contáctanos</h2>
-            <p className="s-sub">Consultas, sugerencias o reclamos. Te respondemos a la brevedad.</p>
+            <p className="s-sub">
+              Consultas, sugerencias o reclamos. Te respondemos a la brevedad.
+            </p>
           </div>
           <div className="contact-grid">
             <div className="contact-info">
               <h3>Minimarket Javivi</h3>
-              <p>Escríbenos si tienes dudas sobre tus puntos, productos del catálogo o cualquier otra consulta. Estamos para ayudarte.</p>
-              <div className="c-item"><div className="c-icon">📍</div><span>Visítanos en nuestra tienda</span></div>
-              <div className="c-item"><div className="c-icon">💬</div><a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" style={{ color: "#16a34a", fontWeight: 600 }}>WhatsApp directo</a></div>
-              <div className="c-item"><div className="c-icon">🎁</div><span>Canje presencial sin costo</span></div>
-              <div className="c-tip"><strong>¿Quieres saber tus puntos?</strong><br/>Visítanos o escríbenos por WhatsApp con tu nombre. Te informamos tu saldo al instante.</div>
+              <p>
+                Escríbenos si tienes dudas sobre tus puntos, productos del
+                catálogo o cualquier otra consulta. Estamos para ayudarte.
+              </p>
+              <div className="c-item">
+                <div className="c-icon">📍</div>
+                <span>Visítanos en nuestra tienda</span>
+              </div>
+              <div className="c-item">
+                <div className="c-icon">💬</div>
+                <a
+                  href={`https://wa.me/${WHATSAPP}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#16a34a", fontWeight: 600 }}
+                >
+                  WhatsApp directo
+                </a>
+              </div>
+              <div className="c-item">
+                <div className="c-icon">🎁</div>
+                <span>Canje presencial sin costo</span>
+              </div>
+              <div className="c-tip">
+                <strong>¿Quieres saber tus puntos?</strong>
+                <br />
+                Visítanos o escríbenos por WhatsApp con tu nombre. Te informamos
+                tu saldo al instante.
+              </div>
             </div>
             <div>
-              <div className="form-group"><label className="form-label">Tu nombre *</label><input className="form-input" placeholder="María González" value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })}/></div>
-              <div className="form-group"><label className="form-label">Email (opcional)</label><input className="form-input" type="email" placeholder="maria@correo.cl" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}/></div>
-              <div className="form-group"><label className="form-label">Tipo de mensaje</label>
-                <select className="form-input" value={form.tipo} onChange={e => setForm({ ...form, tipo: e.target.value })}>
+              <div className="form-group">
+                <label className="form-label">Tu nombre *</label>
+                <input
+                  className="form-input"
+                  placeholder="María González"
+                  value={form.nombre}
+                  onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Email (opcional)</label>
+                <input
+                  className="form-input"
+                  type="email"
+                  placeholder="maria@correo.cl"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Tipo de mensaje</label>
+                <select
+                  className="form-input"
+                  value={form.tipo}
+                  onChange={(e) => setForm({ ...form, tipo: e.target.value })}
+                >
                   <option value="consulta">💬 Consulta</option>
                   <option value="sugerencia">💡 Sugerencia</option>
                   <option value="reclamo">⚠️ Reclamo</option>
                 </select>
               </div>
-              <div className="form-group"><label className="form-label">Mensaje *</label><textarea className="form-textarea" placeholder="Escribe tu mensaje..." value={form.mensaje} onChange={e => setForm({ ...form, mensaje: e.target.value })}/></div>
-              <button className="btn-submit" onClick={handleContact} disabled={sending}>{sending ? "Enviando..." : "Enviar mensaje"}</button>
+              <div className="form-group">
+                <label className="form-label">Mensaje *</label>
+                <textarea
+                  className="form-textarea"
+                  placeholder="Escribe tu mensaje..."
+                  value={form.mensaje}
+                  onChange={(e) =>
+                    setForm({ ...form, mensaje: e.target.value })
+                  }
+                />
+              </div>
+              <button
+                className="btn-submit"
+                onClick={handleContact}
+                disabled={sending}
+              >
+                {sending ? "Enviando..." : "Enviar mensaje"}
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {toast && <Toast msg={toast} onClose={() => setToast(null)}/>}
+      {toast && <Toast msg={toast} onClose={() => setToast(null)} />}
     </>
   );
 }
@@ -495,8 +1040,21 @@ function Admin({ showToast }) {
   const [categorias, setCategorias] = useState([]);
   const [promos, setPromos] = useState([]);
   const [mensajes, setMensajes] = useState([]);
-  const [prodForm, setProdForm] = useState({ nombre: "", descripcion: "", puntos_requeridos: 0, categoria_id: "", activo: true, destacado: false });
-  const [promoForm, setPromoForm] = useState({ nombre: "", descripcion: "", precio_original: "", precio_oferta: "", activo: true });
+  const [prodForm, setProdForm] = useState({
+    nombre: "",
+    descripcion: "",
+    puntos_requeridos: 0,
+    categoria_id: "",
+    activo: true,
+    destacado: false,
+  });
+  const [promoForm, setPromoForm] = useState({
+    nombre: "",
+    descripcion: "",
+    precio_original: "",
+    precio_oferta: "",
+    activo: true,
+  });
   const [catForm, setCatForm] = useState({ nombre: "", icono: "🎁" });
   const [prodFile, setProdFile] = useState(null);
   const [promoFile, setPromoFile] = useState(null);
@@ -504,10 +1062,16 @@ function Admin({ showToast }) {
 
   const load = async () => {
     const [p, c, pr, m] = await Promise.all([
-      supabaseAdmin.from("productos").select("*, categorias(nombre,icono)").order("nombre"),
+      supabaseAdmin
+        .from("productos")
+        .select("*, categorias(nombre,icono)")
+        .order("nombre"),
       supabaseAdmin.from("categorias").select("*").order("orden"),
       supabaseAdmin.from("promociones").select("*").order("orden"),
-      supabaseAdmin.from("contacto_mensajes").select("*").order("created_at", { ascending: false }),
+      supabaseAdmin
+        .from("contacto_mensajes")
+        .select("*")
+        .order("created_at", { ascending: false }),
     ]);
     setProductos(p.data || []);
     setCategorias(c.data || []);
@@ -515,12 +1079,22 @@ function Admin({ showToast }) {
     setMensajes(m.data || []);
   };
 
-  useEffect(() => { if (user) load(); }, [user]);
+  useEffect(() => {
+    if (user) load();
+  }, [user]);
 
   const handleLogin = async () => {
     const hash = await hashPassword(loginData.password);
-    const { data, error } = await supabase.from("admins").select("*").eq("email", loginData.email).eq("password_hash", hash).single();
-    if (error || !data) { setLoginErr("Credenciales incorrectas"); return; }
+    const { data, error } = await supabase
+      .from("admins")
+      .select("*")
+      .eq("email", loginData.email)
+      .eq("password_hash", hash)
+      .single();
+    if (error || !data) {
+      setLoginErr("Credenciales incorrectas");
+      return;
+    }
     setUser(data);
   };
 
@@ -533,240 +1107,995 @@ function Admin({ showToast }) {
   };
 
   const saveProd = async () => {
-    if (!prodForm.nombre.trim()) { showToast("El nombre es obligatorio"); return; }
+    if (!prodForm.nombre.trim()) {
+      showToast("El nombre es obligatorio");
+      return;
+    }
     setSaving(true);
     let foto_url = prodForm.foto_url || null;
     if (prodFile) foto_url = await uploadFoto(prodFile, "productos");
-    const d = { ...prodForm, foto_url, puntos_requeridos: parseInt(prodForm.puntos_requeridos) || 0 };
+    const d = {
+      ...prodForm,
+      foto_url,
+      puntos_requeridos: parseInt(prodForm.puntos_requeridos) || 0,
+    };
     delete d.categorias;
-    if (prodForm.id) await supabaseAdmin.from("productos").update(d).eq("id", prodForm.id);
+    if (prodForm.id)
+      await supabaseAdmin.from("productos").update(d).eq("id", prodForm.id);
     else await supabaseAdmin.from("productos").insert(d);
     showToast("Producto guardado ✅");
-    setProdForm({ nombre: "", descripcion: "", puntos_requeridos: 0, categoria_id: "", activo: true, destacado: false });
-    setProdFile(null); load(); setSaving(false);
+    setProdForm({
+      nombre: "",
+      descripcion: "",
+      puntos_requeridos: 0,
+      categoria_id: "",
+      activo: true,
+      destacado: false,
+    });
+    setProdFile(null);
+    load();
+    setSaving(false);
   };
 
   const savePromo = async () => {
-    if (!promoForm.nombre.trim() || !promoForm.precio_oferta) { showToast("Nombre y precio oferta son obligatorios"); return; }
+    if (!promoForm.nombre.trim() || !promoForm.precio_oferta) {
+      showToast("Nombre y precio oferta son obligatorios");
+      return;
+    }
     setSaving(true);
     let foto_url = promoForm.foto_url || null;
     if (promoFile) foto_url = await uploadFoto(promoFile, "promociones");
-    const d = { ...promoForm, foto_url, precio_oferta: parseFloat(promoForm.precio_oferta) || 0, precio_original: parseFloat(promoForm.precio_original) || null };
-    if (promoForm.id) await supabaseAdmin.from("promociones").update(d).eq("id", promoForm.id);
+    const d = {
+      ...promoForm,
+      foto_url,
+      precio_oferta: parseFloat(promoForm.precio_oferta) || 0,
+      precio_original: parseFloat(promoForm.precio_original) || null,
+    };
+    if (promoForm.id)
+      await supabaseAdmin.from("promociones").update(d).eq("id", promoForm.id);
     else await supabaseAdmin.from("promociones").insert(d);
     showToast("Promoción guardada ✅");
-    setPromoForm({ nombre: "", descripcion: "", precio_original: "", precio_oferta: "", activo: true });
-    setPromoFile(null); load(); setSaving(false);
+    setPromoForm({
+      nombre: "",
+      descripcion: "",
+      precio_original: "",
+      precio_oferta: "",
+      activo: true,
+    });
+    setPromoFile(null);
+    load();
+    setSaving(false);
   };
 
-  if (!user) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f8fafc", paddingTop: 68 }}>
-      <div style={{ background: "white", borderRadius: 20, padding: 40, width: "100%", maxWidth: 368, border: "1px solid #e5e7eb", boxShadow: "0 8px 32px rgba(0,0,0,0.06)" }}>
-        <div style={{ textAlign: "center", marginBottom: 28 }}><LogoSVG size={64}/>
-          <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 21, color: G, marginTop: 12 }}>Panel Admin</h2>
-          <p style={{ fontSize: 12.5, color: "#9ca3af", marginTop: 4 }}>Minimarket Javivi</p></div>
-        {loginErr && <div style={{ background: "#fee2e2", color: "#dc2626", padding: "10px 14px", borderRadius: 10, fontSize: 13, marginBottom: 16 }}>{loginErr}</div>}
-        <div className="form-group"><label className="form-label">Email</label><input className="form-input" type="email" value={loginData.email} onChange={e => setLoginData({ ...loginData, email: e.target.value })}/></div>
-        <div className="form-group"><label className="form-label">Contraseña</label><input className="form-input" type="password" value={loginData.password} onChange={e => setLoginData({ ...loginData, password: e.target.value })} onKeyDown={e => e.key === "Enter" && handleLogin()}/></div>
-        <button className="btn-submit" onClick={handleLogin}>Ingresar</button>
+  if (!user)
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#f8fafc",
+          paddingTop: 68,
+        }}
+      >
+        <div
+          style={{
+            background: "white",
+            borderRadius: 20,
+            padding: 40,
+            width: "100%",
+            maxWidth: 368,
+            border: "1px solid #e5e7eb",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <LogoSVG size={64} />
+            <h2
+              style={{
+                fontFamily: "'Playfair Display',serif",
+                fontSize: 21,
+                color: G,
+                marginTop: 12,
+              }}
+            >
+              Panel Admin
+            </h2>
+            <p style={{ fontSize: 12.5, color: "#9ca3af", marginTop: 4 }}>
+              Minimarket Javivi
+            </p>
+          </div>
+          {loginErr && (
+            <div
+              style={{
+                background: "#fee2e2",
+                color: "#dc2626",
+                padding: "10px 14px",
+                borderRadius: 10,
+                fontSize: 13,
+                marginBottom: 16,
+              }}
+            >
+              {loginErr}
+            </div>
+          )}
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input
+              className="form-input"
+              type="email"
+              value={loginData.email}
+              onChange={(e) =>
+                setLoginData({ ...loginData, email: e.target.value })
+              }
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Contraseña</label>
+            <input
+              className="form-input"
+              type="password"
+              value={loginData.password}
+              onChange={(e) =>
+                setLoginData({ ...loginData, password: e.target.value })
+              }
+              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+            />
+          </div>
+          <button className="btn-submit" onClick={handleLogin}>
+            Ingresar
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
 
-  const nav = [["dashboard","📊","Dashboard"],["productos","🎁","Catálogo"],["categorias","🏷️","Categorías"],["promociones","🔥","Promociones"],["mensajes","💬","Mensajes"]];
+  const nav = [
+    ["dashboard", "📊", "Dashboard"],
+    ["productos", "🎁", "Catálogo"],
+    ["categorias", "🏷️", "Categorías"],
+    ["promociones", "🔥", "Promociones"],
+    ["mensajes", "💬", "Mensajes"],
+  ];
 
   return (
     <div className="admin-wrap">
       <div className="admin-side">
-        <div className="side-logo"><LogoSVG size={40}/><div className="side-lbl">Admin Panel</div></div>
-        {nav.map(([k,ic,lbl]) => (
-          <div key={k} className={`side-item ${tab===k?"active":""}`} onClick={() => setTab(k)}><span>{ic}</span><span>{lbl}</span></div>
+        <div className="side-logo">
+          <LogoSVG size={40} />
+          <div className="side-lbl">Admin Panel</div>
+        </div>
+        {nav.map(([k, ic, lbl]) => (
+          <div
+            key={k}
+            className={`side-item ${tab === k ? "active" : ""}`}
+            onClick={() => setTab(k)}
+          >
+            <span>{ic}</span>
+            <span>{lbl}</span>
+          </div>
         ))}
-        <div style={{ marginTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 12 }}>
-          <div className="side-item" onClick={() => setUser(null)}><span>🚪</span><span>Cerrar sesión</span></div>
+        <div
+          style={{
+            marginTop: 16,
+            borderTop: "1px solid rgba(255,255,255,0.1)",
+            paddingTop: 12,
+          }}
+        >
+          <div className="side-item" onClick={() => setUser(null)}>
+            <span>🚪</span>
+            <span>Cerrar sesión</span>
+          </div>
         </div>
       </div>
       <div className="admin-content">
-
-        {tab === "dashboard" && (<>
-          <h1 className="page-title">Dashboard</h1>
-          <div className="stats-row">
-            {[["🎁",productos.filter(p=>p.activo).length,"Productos activos"],["🔥",promos.filter(p=>p.activo).length,"Promociones activas"],["💬",mensajes.filter(m=>m.estado==="pendiente").length,"Mensajes nuevos"]].map(([ic,v,l])=>(
-              <div className="s-box" key={l}><div className="s-box-ic">{ic}</div><div className="s-box-val">{v}</div><div className="s-box-lbl">{l}</div></div>
-            ))}
-          </div>
-          <div className="panel">
-            <div className="panel-hd"><span className="panel-ttl">Mensajes recientes</span></div>
-            <div className="panel-bd">
-              {mensajes.slice(0,5).map(m=>(
-                <div key={m.id} style={{padding:"12px 0",borderBottom:"1px solid #f5f5f5",display:"flex",justifyContent:"space-between",gap:12}}>
-                  <div><div style={{fontWeight:600,fontSize:14,color:G}}>{m.nombre_contacto}</div><div style={{fontSize:13,color:"#6b7280",marginTop:2}}>{m.mensaje?.slice(0,80)}...</div></div>
-                  <span className={`badge ${m.estado==="pendiente"?"br":"bg"}`}>{m.estado}</span>
+        {tab === "dashboard" && (
+          <>
+            <h1 className="page-title">Dashboard</h1>
+            <div className="stats-row">
+              {[
+                [
+                  "🎁",
+                  productos.filter((p) => p.activo).length,
+                  "Productos activos",
+                ],
+                [
+                  "🔥",
+                  promos.filter((p) => p.activo).length,
+                  "Promociones activas",
+                ],
+                [
+                  "💬",
+                  mensajes.filter((m) => m.estado === "pendiente").length,
+                  "Mensajes nuevos",
+                ],
+              ].map(([ic, v, l]) => (
+                <div className="s-box" key={l}>
+                  <div className="s-box-ic">{ic}</div>
+                  <div className="s-box-val">{v}</div>
+                  <div className="s-box-lbl">{l}</div>
                 </div>
               ))}
-              {mensajes.length===0&&<p style={{color:"#9ca3af",fontSize:14}}>Sin mensajes aún.</p>}
             </div>
-          </div>
-        </>)}
-
-        {tab === "productos" && (<>
-          <h1 className="page-title">Catálogo de Productos</h1>
-          <div className="two-col">
             <div className="panel">
               <div className="panel-hd">
-                <span className="panel-ttl">{prodForm.id?"Editar":"Agregar"} producto</span>
-                {prodForm.id&&<button className="btn-s btn-s-d" onClick={()=>setProdForm({nombre:"",descripcion:"",puntos_requeridos:0,categoria_id:"",activo:true,destacado:false})}>Cancelar</button>}
+                <span className="panel-ttl">Mensajes recientes</span>
               </div>
               <div className="panel-bd">
-                <div className="form-group"><label className="form-label">Foto del producto</label>
-                  <input type="file" accept="image/*" className="form-input" style={{padding:"7px"}} onChange={e=>setProdFile(e.target.files[0])}/>
-                  {prodForm.foto_url&&<img src={prodForm.foto_url} alt="" style={{width:"100%",height:120,objectFit:"cover",borderRadius:8,marginTop:8}}/>}
-                </div>
-                <div className="form-group"><label className="form-label">Nombre *</label><input className="form-input" placeholder="Ej: Smart TV 40 pulgadas" value={prodForm.nombre} onChange={e=>setProdForm({...prodForm,nombre:e.target.value})}/></div>
-                <div className="form-group"><label className="form-label">Descripción</label><textarea className="form-textarea" style={{minHeight:72}} placeholder="Detalles del producto..." value={prodForm.descripcion} onChange={e=>setProdForm({...prodForm,descripcion:e.target.value})}/></div>
-                <div className="form-group"><label className="form-label">Puntos requeridos *</label><input className="form-input" type="number" placeholder="0" value={prodForm.puntos_requeridos} onChange={e=>setProdForm({...prodForm,puntos_requeridos:e.target.value})}/></div>
-                <div className="form-group"><label className="form-label">Categoría</label>
-                  <select className="form-input" value={prodForm.categoria_id} onChange={e=>setProdForm({...prodForm,categoria_id:e.target.value})}>
-                    <option value="">Sin categoría</option>
-                    {categorias.map(c=><option key={c.id} value={c.id}>{c.icono} {c.nombre}</option>)}
-                  </select>
-                </div>
-                <div style={{display:"flex",gap:20,marginBottom:16}}>
-                  <label style={{display:"flex",gap:7,alignItems:"center",fontSize:13,cursor:"pointer"}}><input type="checkbox" checked={prodForm.activo} onChange={e=>setProdForm({...prodForm,activo:e.target.checked})}/> Activo</label>
-                  <label style={{display:"flex",gap:7,alignItems:"center",fontSize:13,cursor:"pointer"}}><input type="checkbox" checked={prodForm.destacado} onChange={e=>setProdForm({...prodForm,destacado:e.target.checked})}/> Destacado</label>
-                </div>
-                <button className="btn-submit" onClick={saveProd} disabled={saving}>{saving?"Guardando...":prodForm.id?"Actualizar producto":"Agregar producto"}</button>
-              </div>
-            </div>
-            <div className="panel">
-              <div className="panel-hd"><span className="panel-ttl">Productos ({productos.length})</span></div>
-              <div className="tbl-wrap">
-                <table>
-                  <thead><tr><th>Producto</th><th>Puntos</th><th>Estado</th><th></th></tr></thead>
-                  <tbody>
-                    {productos.map(p=>(
-                      <tr key={p.id}>
-                        <td>
-                          <div style={{display:"flex",alignItems:"center",gap:10}}>
-                            <div style={{width:40,height:40,borderRadius:8,background:"#f0fdf4",overflow:"hidden",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
-                              {p.foto_url?<img src={p.foto_url} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:"🎁"}
-                            </div>
-                            <div><div style={{fontWeight:600,fontSize:13,color:G}}>{p.nombre}</div><div style={{fontSize:11,color:"#9ca3af"}}>{p.categorias?.icono} {p.categorias?.nombre||"Sin categoría"}</div></div>
-                          </div>
-                        </td>
-                        <td><span style={{fontWeight:700,color:"#78350f",fontSize:13}}>⭐ {fmtPuntos(p.puntos_requeridos)}</span></td>
-                        <td><span className={`badge ${p.activo?"bg":"bgr"}`}>{p.activo?"Activo":"Oculto"}</span></td>
-                        <td><div style={{display:"flex",gap:6}}>
-                          <button className="btn-s btn-s-p" onClick={()=>setProdForm({...p,categoria_id:p.categoria_id||""})}>Editar</button>
-                          <button className="btn-s btn-s-d" onClick={async()=>{await supabaseAdmin.from("productos").delete().eq("id",p.id);showToast("Eliminado");load();}}>✕</button>
-                        </div></td>
-                      </tr>
-                    ))}
-                    {productos.length===0&&<tr><td colSpan={4} style={{textAlign:"center",color:"#9ca3af",padding:36}}>Sin productos aún.</td></tr>}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </>)}
-
-        {tab === "categorias" && (<>
-          <h1 className="page-title">Categorías</h1>
-          <div className="two-col-eq">
-            <div className="panel">
-              <div className="panel-hd"><span className="panel-ttl">Nueva categoría</span></div>
-              <div className="panel-bd">
-                <div className="form-group"><label className="form-label">Nombre</label><input className="form-input" placeholder="Ej: Línea Blanca" value={catForm.nombre} onChange={e=>setCatForm({...catForm,nombre:e.target.value})}/></div>
-                <div className="form-group"><label className="form-label">Icono (emoji)</label><input className="form-input" value={catForm.icono} onChange={e=>setCatForm({...catForm,icono:e.target.value})}/></div>
-                <button className="btn-submit" onClick={async()=>{if(!catForm.nombre.trim())return;await supabaseAdmin.from("categorias").insert(catForm);showToast("Categoría creada ✅");setCatForm({nombre:"",icono:"🎁"});load();}}>Agregar categoría</button>
-              </div>
-            </div>
-            <div className="panel">
-              <div className="panel-hd"><span className="panel-ttl">Categorías ({categorias.length})</span></div>
-              <div className="panel-bd">
-                {categorias.map(c=>(
-                  <div key={c.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:"1px solid #f5f5f5"}}>
-                    <span style={{fontSize:15}}>{c.icono} <strong>{c.nombre}</strong></span>
-                    <button className="btn-s btn-s-d" onClick={async()=>{await supabaseAdmin.from("categorias").delete().eq("id",c.id);showToast("Eliminada");load();}}>✕</button>
+                {mensajes.slice(0, 5).map((m) => (
+                  <div
+                    key={m.id}
+                    style={{
+                      padding: "12px 0",
+                      borderBottom: "1px solid #f5f5f5",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: 12,
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: 14, color: G }}>
+                        {m.nombre_contacto}
+                      </div>
+                      <div
+                        style={{ fontSize: 13, color: "#6b7280", marginTop: 2 }}
+                      >
+                        {m.mensaje?.slice(0, 80)}...
+                      </div>
+                    </div>
+                    <span
+                      className={`badge ${
+                        m.estado === "pendiente" ? "br" : "bg"
+                      }`}
+                    >
+                      {m.estado}
+                    </span>
                   </div>
                 ))}
-                {categorias.length===0&&<p style={{color:"#9ca3af",fontSize:14}}>Sin categorías aún.</p>}
+                {mensajes.length === 0 && (
+                  <p style={{ color: "#9ca3af", fontSize: 14 }}>
+                    Sin mensajes aún.
+                  </p>
+                )}
               </div>
             </div>
-          </div>
-        </>)}
+          </>
+        )}
 
-        {tab === "promociones" && (<>
-          <h1 className="page-title">Promociones</h1>
-          <div className="two-col">
-            <div className="panel">
-              <div className="panel-hd">
-                <span className="panel-ttl">{promoForm.id?"Editar":"Nueva"} promoción</span>
-                {promoForm.id&&<button className="btn-s btn-s-d" onClick={()=>setPromoForm({nombre:"",descripcion:"",precio_original:"",precio_oferta:"",activo:true})}>Cancelar</button>}
-              </div>
-              <div className="panel-bd">
-                <div className="form-group"><label className="form-label">Foto</label><input type="file" accept="image/*" className="form-input" style={{padding:"7px"}} onChange={e=>setPromoFile(e.target.files[0])}/></div>
-                <div className="form-group"><label className="form-label">Nombre *</label><input className="form-input" value={promoForm.nombre} onChange={e=>setPromoForm({...promoForm,nombre:e.target.value})}/></div>
-                <div className="form-group"><label className="form-label">Descripción</label><textarea className="form-textarea" style={{minHeight:64}} value={promoForm.descripcion} onChange={e=>setPromoForm({...promoForm,descripcion:e.target.value})}/></div>
-                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
-                  <div className="form-group"><label className="form-label">Precio original</label><input className="form-input" type="number" placeholder="0" value={promoForm.precio_original} onChange={e=>setPromoForm({...promoForm,precio_original:e.target.value})}/></div>
-                  <div className="form-group"><label className="form-label">Precio oferta *</label><input className="form-input" type="number" placeholder="0" value={promoForm.precio_oferta} onChange={e=>setPromoForm({...promoForm,precio_oferta:e.target.value})}/></div>
+        {tab === "productos" && (
+          <>
+            <h1 className="page-title">Catálogo de Productos</h1>
+            <div className="two-col">
+              <div className="panel">
+                <div className="panel-hd">
+                  <span className="panel-ttl">
+                    {prodForm.id ? "Editar" : "Agregar"} producto
+                  </span>
+                  {prodForm.id && (
+                    <button
+                      className="btn-s btn-s-d"
+                      onClick={() =>
+                        setProdForm({
+                          nombre: "",
+                          descripcion: "",
+                          puntos_requeridos: 0,
+                          categoria_id: "",
+                          activo: true,
+                          destacado: false,
+                        })
+                      }
+                    >
+                      Cancelar
+                    </button>
+                  )}
                 </div>
-                <label style={{display:"flex",gap:7,alignItems:"center",fontSize:13,cursor:"pointer",marginBottom:16}}><input type="checkbox" checked={promoForm.activo} onChange={e=>setPromoForm({...promoForm,activo:e.target.checked})}/> Activa</label>
-                <button className="btn-submit" onClick={savePromo} disabled={saving}>{saving?"Guardando...":promoForm.id?"Actualizar":"Crear promoción"}</button>
+                <div className="panel-bd">
+                  <div className="form-group">
+                    <label className="form-label">Foto del producto</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="form-input"
+                      style={{ padding: "7px" }}
+                      onChange={(e) => setProdFile(e.target.files[0])}
+                    />
+                    {prodForm.foto_url && (
+                      <img
+                        src={prodForm.foto_url}
+                        alt=""
+                        style={{
+                          width: "100%",
+                          height: 120,
+                          objectFit: "cover",
+                          borderRadius: 8,
+                          marginTop: 8,
+                        }}
+                      />
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Nombre *</label>
+                    <input
+                      className="form-input"
+                      placeholder="Ej: Smart TV 40 pulgadas"
+                      value={prodForm.nombre}
+                      onChange={(e) =>
+                        setProdForm({ ...prodForm, nombre: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Descripción</label>
+                    <textarea
+                      className="form-textarea"
+                      style={{ minHeight: 72 }}
+                      placeholder="Detalles del producto..."
+                      value={prodForm.descripcion}
+                      onChange={(e) =>
+                        setProdForm({
+                          ...prodForm,
+                          descripcion: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Puntos requeridos *</label>
+                    <input
+                      className="form-input"
+                      type="number"
+                      placeholder="0"
+                      value={prodForm.puntos_requeridos}
+                      onChange={(e) =>
+                        setProdForm({
+                          ...prodForm,
+                          puntos_requeridos: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Categoría</label>
+                    <select
+                      className="form-input"
+                      value={prodForm.categoria_id}
+                      onChange={(e) =>
+                        setProdForm({
+                          ...prodForm,
+                          categoria_id: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="">Sin categoría</option>
+                      {categorias.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.icono} {c.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div style={{ display: "flex", gap: 20, marginBottom: 16 }}>
+                    <label
+                      style={{
+                        display: "flex",
+                        gap: 7,
+                        alignItems: "center",
+                        fontSize: 13,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={prodForm.activo}
+                        onChange={(e) =>
+                          setProdForm({ ...prodForm, activo: e.target.checked })
+                        }
+                      />{" "}
+                      Activo
+                    </label>
+                    <label
+                      style={{
+                        display: "flex",
+                        gap: 7,
+                        alignItems: "center",
+                        fontSize: 13,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={prodForm.destacado}
+                        onChange={(e) =>
+                          setProdForm({
+                            ...prodForm,
+                            destacado: e.target.checked,
+                          })
+                        }
+                      />{" "}
+                      Destacado
+                    </label>
+                  </div>
+                  <button
+                    className="btn-submit"
+                    onClick={saveProd}
+                    disabled={saving}
+                  >
+                    {saving
+                      ? "Guardando..."
+                      : prodForm.id
+                      ? "Actualizar producto"
+                      : "Agregar producto"}
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="panel">
-              <div className="panel-hd"><span className="panel-ttl">Promociones ({promos.length})</span></div>
-              <div className="tbl-wrap">
-                <table>
-                  <thead><tr><th>Nombre</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
-                  <tbody>
-                    {promos.map(p=>(
-                      <tr key={p.id}>
-                        <td style={{fontWeight:600,fontSize:13}}>{p.nombre}</td>
-                        <td><span style={{fontWeight:700,color:"#dc2626"}}>{fmtPeso(p.precio_oferta)}</span></td>
-                        <td><span className={`badge ${p.activo?"bg":"bgr"}`}>{p.activo?"Activa":"Inactiva"}</span></td>
-                        <td><div style={{display:"flex",gap:6}}>
-                          <button className="btn-s btn-s-p" onClick={()=>setPromoForm({...p})}>Editar</button>
-                          <button className="btn-s btn-s-d" onClick={async()=>{await supabaseAdmin.from("promociones").delete().eq("id",p.id);showToast("Eliminada");load();}}>✕</button>
-                        </div></td>
+              <div className="panel">
+                <div className="panel-hd">
+                  <span className="panel-ttl">
+                    Productos ({productos.length})
+                  </span>
+                </div>
+                <div className="tbl-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Puntos</th>
+                        <th>Estado</th>
+                        <th></th>
                       </tr>
-                    ))}
-                    {promos.length===0&&<tr><td colSpan={4} style={{textAlign:"center",color:"#9ca3af",padding:32}}>Sin promociones aún.</td></tr>}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {productos.map((p) => (
+                        <tr key={p.id}>
+                          <td>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 10,
+                              }}
+                            >
+                              <div
+                                style={{
+                                  width: 40,
+                                  height: 40,
+                                  borderRadius: 8,
+                                  background: "#f0fdf4",
+                                  overflow: "hidden",
+                                  flexShrink: 0,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  fontSize: 18,
+                                }}
+                              >
+                                {p.foto_url ? (
+                                  <img
+                                    src={p.foto_url}
+                                    alt=""
+                                    style={{
+                                      width: "100%",
+                                      height: "100%",
+                                      objectFit: "cover",
+                                    }}
+                                  />
+                                ) : (
+                                  "🎁"
+                                )}
+                              </div>
+                              <div>
+                                <div
+                                  style={{
+                                    fontWeight: 600,
+                                    fontSize: 13,
+                                    color: G,
+                                  }}
+                                >
+                                  {p.nombre}
+                                </div>
+                                <div style={{ fontSize: 11, color: "#9ca3af" }}>
+                                  {p.categorias?.icono}{" "}
+                                  {p.categorias?.nombre || "Sin categoría"}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <span
+                              style={{
+                                fontWeight: 700,
+                                color: "#78350f",
+                                fontSize: 13,
+                              }}
+                            >
+                              ⭐ {fmtPuntos(p.puntos_requeridos)}
+                            </span>
+                          </td>
+                          <td>
+                            <span
+                              className={`badge ${p.activo ? "bg" : "bgr"}`}
+                            >
+                              {p.activo ? "Activo" : "Oculto"}
+                            </span>
+                          </td>
+                          <td>
+                            <div style={{ display: "flex", gap: 6 }}>
+                              <button
+                                className="btn-s btn-s-p"
+                                onClick={() =>
+                                  setProdForm({
+                                    ...p,
+                                    categoria_id: p.categoria_id || "",
+                                  })
+                                }
+                              >
+                                Editar
+                              </button>
+                              <button
+                                className="btn-s btn-s-d"
+                                onClick={async () => {
+                                  await supabaseAdmin
+                                    .from("productos")
+                                    .delete()
+                                    .eq("id", p.id);
+                                  showToast("Eliminado");
+                                  load();
+                                }}
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                      {productos.length === 0 && (
+                        <tr>
+                          <td
+                            colSpan={4}
+                            style={{
+                              textAlign: "center",
+                              color: "#9ca3af",
+                              padding: 36,
+                            }}
+                          >
+                            Sin productos aún.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
-        </>)}
+          </>
+        )}
 
-        {tab === "mensajes" && (<>
-          <h1 className="page-title">Mensajes de clientes</h1>
-          <div className="panel">
-            <div className="panel-bd">
-              {mensajes.map(m=>(
-                <div key={m.id} style={{padding:"18px 0",borderBottom:"1px solid #f5f5f5"}}>
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:8,marginBottom:8}}>
-                    <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
-                      <span style={{fontWeight:700,color:G,fontSize:14}}>{m.nombre_contacto}</span>
-                      <span className={`badge ${m.tipo==="reclamo"?"br":m.tipo==="sugerencia"?"bgr":"bg"}`}>{m.tipo==="reclamo"?"⚠️ Reclamo":m.tipo==="sugerencia"?"💡 Sugerencia":"💬 Consulta"}</span>
-                      <span className={`badge ${m.estado==="pendiente"?"br":"bg"}`}>{m.estado}</span>
+        {tab === "categorias" && (
+          <>
+            <h1 className="page-title">Categorías</h1>
+            <div className="two-col-eq">
+              <div className="panel">
+                <div className="panel-hd">
+                  <span className="panel-ttl">Nueva categoría</span>
+                </div>
+                <div className="panel-bd">
+                  <div className="form-group">
+                    <label className="form-label">Nombre</label>
+                    <input
+                      className="form-input"
+                      placeholder="Ej: Línea Blanca"
+                      value={catForm.nombre}
+                      onChange={(e) =>
+                        setCatForm({ ...catForm, nombre: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Icono (emoji)</label>
+                    <input
+                      className="form-input"
+                      value={catForm.icono}
+                      onChange={(e) =>
+                        setCatForm({ ...catForm, icono: e.target.value })
+                      }
+                    />
+                  </div>
+                  <button
+                    className="btn-submit"
+                    onClick={async () => {
+                      if (!catForm.nombre.trim()) return;
+                      await supabaseAdmin.from("categorias").insert(catForm);
+                      showToast("Categoría creada ✅");
+                      setCatForm({ nombre: "", icono: "🎁" });
+                      load();
+                    }}
+                  >
+                    Agregar categoría
+                  </button>
+                </div>
+              </div>
+              <div className="panel">
+                <div className="panel-hd">
+                  <span className="panel-ttl">
+                    Categorías ({categorias.length})
+                  </span>
+                </div>
+                <div className="panel-bd">
+                  {categorias.map((c) => (
+                    <div
+                      key={c.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "10px 0",
+                        borderBottom: "1px solid #f5f5f5",
+                      }}
+                    >
+                      <span style={{ fontSize: 15 }}>
+                        {c.icono} <strong>{c.nombre}</strong>
+                      </span>
+                      <button
+                        className="btn-s btn-s-d"
+                        onClick={async () => {
+                          await supabaseAdmin
+                            .from("categorias")
+                            .delete()
+                            .eq("id", c.id);
+                          showToast("Eliminada");
+                          load();
+                        }}
+                      >
+                        ✕
+                      </button>
                     </div>
-                    <div style={{display:"flex",gap:8,alignItems:"center"}}>
-                      <span style={{fontSize:11.5,color:"#9ca3af"}}>{new Date(m.created_at).toLocaleDateString("es-CL")}</span>
-                      {m.estado==="pendiente"&&<button className="btn-s btn-s-p" onClick={async()=>{await supabaseAdmin.from("contacto_mensajes").update({estado:"leido"}).eq("id",m.id);showToast("Marcado como leído");load();}}>Marcar leído</button>}
+                  ))}
+                  {categorias.length === 0 && (
+                    <p style={{ color: "#9ca3af", fontSize: 14 }}>
+                      Sin categorías aún.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {tab === "promociones" && (
+          <>
+            <h1 className="page-title">Promociones</h1>
+            <div className="two-col">
+              <div className="panel">
+                <div className="panel-hd">
+                  <span className="panel-ttl">
+                    {promoForm.id ? "Editar" : "Nueva"} promoción
+                  </span>
+                  {promoForm.id && (
+                    <button
+                      className="btn-s btn-s-d"
+                      onClick={() =>
+                        setPromoForm({
+                          nombre: "",
+                          descripcion: "",
+                          precio_original: "",
+                          precio_oferta: "",
+                          activo: true,
+                        })
+                      }
+                    >
+                      Cancelar
+                    </button>
+                  )}
+                </div>
+                <div className="panel-bd">
+                  <div className="form-group">
+                    <label className="form-label">Foto</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="form-input"
+                      style={{ padding: "7px" }}
+                      onChange={(e) => setPromoFile(e.target.files[0])}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Nombre *</label>
+                    <input
+                      className="form-input"
+                      value={promoForm.nombre}
+                      onChange={(e) =>
+                        setPromoForm({ ...promoForm, nombre: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Descripción</label>
+                    <textarea
+                      className="form-textarea"
+                      style={{ minHeight: 64 }}
+                      value={promoForm.descripcion}
+                      onChange={(e) =>
+                        setPromoForm({
+                          ...promoForm,
+                          descripcion: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 12,
+                    }}
+                  >
+                    <div className="form-group">
+                      <label className="form-label">Precio original</label>
+                      <input
+                        className="form-input"
+                        type="number"
+                        placeholder="0"
+                        value={promoForm.precio_original}
+                        onChange={(e) =>
+                          setPromoForm({
+                            ...promoForm,
+                            precio_original: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Precio oferta *</label>
+                      <input
+                        className="form-input"
+                        type="number"
+                        placeholder="0"
+                        value={promoForm.precio_oferta}
+                        onChange={(e) =>
+                          setPromoForm({
+                            ...promoForm,
+                            precio_oferta: e.target.value,
+                          })
+                        }
+                      />
                     </div>
                   </div>
-                  <p style={{fontSize:14,color:"#374151",background:"#f8fafc",padding:"10px 14px",borderRadius:10,lineHeight:1.65}}>{m.mensaje}</p>
-                  {m.email_contacto&&<p style={{fontSize:12,color:"#9ca3af",marginTop:6}}>📧 {m.email_contacto}</p>}
+                  <label
+                    style={{
+                      display: "flex",
+                      gap: 7,
+                      alignItems: "center",
+                      fontSize: 13,
+                      cursor: "pointer",
+                      marginBottom: 16,
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={promoForm.activo}
+                      onChange={(e) =>
+                        setPromoForm({ ...promoForm, activo: e.target.checked })
+                      }
+                    />{" "}
+                    Activa
+                  </label>
+                  <button
+                    className="btn-submit"
+                    onClick={savePromo}
+                    disabled={saving}
+                  >
+                    {saving
+                      ? "Guardando..."
+                      : promoForm.id
+                      ? "Actualizar"
+                      : "Crear promoción"}
+                  </button>
                 </div>
-              ))}
-              {mensajes.length===0&&<div style={{textAlign:"center",padding:40,color:"#9ca3af"}}><div style={{fontSize:40,marginBottom:8}}>💬</div><p>Sin mensajes aún.</p></div>}
+              </div>
+              <div className="panel">
+                <div className="panel-hd">
+                  <span className="panel-ttl">
+                    Promociones ({promos.length})
+                  </span>
+                </div>
+                <div className="tbl-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {promos.map((p) => (
+                        <tr key={p.id}>
+                          <td style={{ fontWeight: 600, fontSize: 13 }}>
+                            {p.nombre}
+                          </td>
+                          <td>
+                            <span style={{ fontWeight: 700, color: "#dc2626" }}>
+                              {fmtPeso(p.precio_oferta)}
+                            </span>
+                          </td>
+                          <td>
+                            <span
+                              className={`badge ${p.activo ? "bg" : "bgr"}`}
+                            >
+                              {p.activo ? "Activa" : "Inactiva"}
+                            </span>
+                          </td>
+                          <td>
+                            <div style={{ display: "flex", gap: 6 }}>
+                              <button
+                                className="btn-s btn-s-p"
+                                onClick={() => setPromoForm({ ...p })}
+                              >
+                                Editar
+                              </button>
+                              <button
+                                className="btn-s btn-s-d"
+                                onClick={async () => {
+                                  await supabaseAdmin
+                                    .from("promociones")
+                                    .delete()
+                                    .eq("id", p.id);
+                                  showToast("Eliminada");
+                                  load();
+                                }}
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                      {promos.length === 0 && (
+                        <tr>
+                          <td
+                            colSpan={4}
+                            style={{
+                              textAlign: "center",
+                              color: "#9ca3af",
+                              padding: 32,
+                            }}
+                          >
+                            Sin promociones aún.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          </div>
-        </>)}
+          </>
+        )}
 
+        {tab === "mensajes" && (
+          <>
+            <h1 className="page-title">Mensajes de clientes</h1>
+            <div className="panel">
+              <div className="panel-bd">
+                {mensajes.map((m) => (
+                  <div
+                    key={m.id}
+                    style={{
+                      padding: "18px 0",
+                      borderBottom: "1px solid #f5f5f5",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        flexWrap: "wrap",
+                        gap: 8,
+                        marginBottom: 8,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <span
+                          style={{ fontWeight: 700, color: G, fontSize: 14 }}
+                        >
+                          {m.nombre_contacto}
+                        </span>
+                        <span
+                          className={`badge ${
+                            m.tipo === "reclamo"
+                              ? "br"
+                              : m.tipo === "sugerencia"
+                              ? "bgr"
+                              : "bg"
+                          }`}
+                        >
+                          {m.tipo === "reclamo"
+                            ? "⚠️ Reclamo"
+                            : m.tipo === "sugerencia"
+                            ? "💡 Sugerencia"
+                            : "💬 Consulta"}
+                        </span>
+                        <span
+                          className={`badge ${
+                            m.estado === "pendiente" ? "br" : "bg"
+                          }`}
+                        >
+                          {m.estado}
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 8,
+                          alignItems: "center",
+                        }}
+                      >
+                        <span style={{ fontSize: 11.5, color: "#9ca3af" }}>
+                          {new Date(m.created_at).toLocaleDateString("es-CL")}
+                        </span>
+                        {m.estado === "pendiente" && (
+                          <button
+                            className="btn-s btn-s-p"
+                            onClick={async () => {
+                              await supabaseAdmin
+                                .from("contacto_mensajes")
+                                .update({ estado: "leido" })
+                                .eq("id", m.id);
+                              showToast("Marcado como leído");
+                              load();
+                            }}
+                          >
+                            Marcar leído
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <p
+                      style={{
+                        fontSize: 14,
+                        color: "#374151",
+                        background: "#f8fafc",
+                        padding: "10px 14px",
+                        borderRadius: 10,
+                        lineHeight: 1.65,
+                      }}
+                    >
+                      {m.mensaje}
+                    </p>
+                    {m.email_contacto && (
+                      <p
+                        style={{ fontSize: 12, color: "#9ca3af", marginTop: 6 }}
+                      >
+                        📧 {m.email_contacto}
+                      </p>
+                    )}
+                  </div>
+                ))}
+                {mensajes.length === 0 && (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: 40,
+                      color: "#9ca3af",
+                    }}
+                  >
+                    <div style={{ fontSize: 40, marginBottom: 8 }}>💬</div>
+                    <p>Sin mensajes aún.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -782,9 +2111,17 @@ export default function App() {
 
   useEffect(() => {
     Promise.all([
-      supabase.from("productos").select("*, categorias(nombre,icono)").eq("activo", true).order("puntos_requeridos"),
+      supabase
+        .from("productos")
+        .select("*, categorias(nombre,icono)")
+        .eq("activo", true)
+        .order("puntos_requeridos"),
       supabase.from("categorias").select("*").eq("activo", true).order("orden"),
-      supabase.from("promociones").select("*").eq("activo", true).order("orden"),
+      supabase
+        .from("promociones")
+        .select("*")
+        .eq("activo", true)
+        .order("orden"),
     ]).then(([p, c, pr]) => {
       setProductos(p.data || []);
       setCategorias(c.data || []);
@@ -797,31 +2134,99 @@ export default function App() {
       <style>{css}</style>
       <nav className="nav">
         <div className="nav-brand" onClick={() => setView("landing")}>
-          <LogoSVG size={44}/>
+          <LogoSVG size={44} />
           <div>
             <div className="nav-brand-name">Javivi</div>
             <div className="nav-brand-sub">Minimarket</div>
           </div>
         </div>
         <div className="nav-links">
-          <button className="nav-link" onClick={() => { setView("landing"); setTimeout(()=>document.getElementById("catalogo-section")?.scrollIntoView({behavior:"smooth"}),100); }}>Catálogo</button>
-          <button className="nav-link" onClick={() => { setView("landing"); setTimeout(()=>document.getElementById("contacto-section")?.scrollIntoView({behavior:"smooth"}),100); }}>Contacto</button>
-          <button className="nav-cta" onClick={() => setView("admin")}>Admin →</button>
+          <button
+            className="nav-link"
+            onClick={() => {
+              setView("landing");
+              setTimeout(
+                () =>
+                  document
+                    .getElementById("catalogo-section")
+                    ?.scrollIntoView({ behavior: "smooth" }),
+                100
+              );
+            }}
+          >
+            Catálogo
+          </button>
+          <button
+            className="nav-link"
+            onClick={() => {
+              setView("landing");
+              setTimeout(
+                () =>
+                  document
+                    .getElementById("contacto-section")
+                    ?.scrollIntoView({ behavior: "smooth" }),
+                100
+              );
+            }}
+          >
+            Contacto
+          </button>
+          <button className="nav-cta" onClick={() => setView("admin")}>
+            Admin →
+          </button>
         </div>
       </nav>
 
       {view === "landing" && (
         <div style={{ paddingTop: 68 }}>
-          <Landing productos={productos} categorias={categorias} promos={promos}/>
+          <Landing
+            productos={productos}
+            categorias={categorias}
+            promos={promos}
+          />
           <footer>
             <div>
               <div className="foot-brand">Minimarket Javivi</div>
-              <div className="foot-copy">© {new Date().getFullYear()} Todos los derechos reservados · Desarrollo web por <a href="https://www.tempvs7.cl" target="_blank" rel="noreferrer">TEMPVS7</a></div>
+              <div className="foot-copy">
+                © {new Date().getFullYear()} Todos los derechos reservados ·
+                Desarrollo web por{" "}
+                <a
+                  href="https://www.tempvs7.cl"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  TEMPVS7
+                </a>
+              </div>
             </div>
             <div className="foot-links">
-              <a onClick={() => document.getElementById("catalogo-section")?.scrollIntoView({behavior:"smooth"})} style={{cursor:"pointer"}}>Catálogo</a>
-              <a onClick={() => document.getElementById("contacto-section")?.scrollIntoView({behavior:"smooth"})} style={{cursor:"pointer"}}>Contacto</a>
-              <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer">WhatsApp</a>
+              <a
+                onClick={() =>
+                  document
+                    .getElementById("catalogo-section")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+                style={{ cursor: "pointer" }}
+              >
+                Catálogo
+              </a>
+              <a
+                onClick={() =>
+                  document
+                    .getElementById("contacto-section")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+                style={{ cursor: "pointer" }}
+              >
+                Contacto
+              </a>
+              <a
+                href={`https://wa.me/${WHATSAPP}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                WhatsApp
+              </a>
             </div>
           </footer>
         </div>
@@ -829,12 +2234,12 @@ export default function App() {
 
       {view === "admin" && (
         <div style={{ paddingTop: 68 }}>
-          <Admin showToast={showToast}/>
+          <Admin showToast={showToast} />
         </div>
       )}
 
-      <WAFloat/>
-      {toast && <Toast msg={toast} onClose={() => setToast(null)}/>}
+      <WAFloat />
+      {toast && <Toast msg={toast} onClose={() => setToast(null)} />}
     </>
   );
 }
