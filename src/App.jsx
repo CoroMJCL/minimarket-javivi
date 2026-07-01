@@ -1,0 +1,840 @@
+import { useState, useEffect, useRef } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_SERVICE = import.meta.env.VITE_SUPABASE_SERVICE_KEY;
+const WHATSAPP = import.meta.env.VITE_WHATSAPP_NUMBER || "56912345678";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
+const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE);
+
+const hashPassword = async (pw) => {
+  const enc = new TextEncoder().encode(pw);
+  const buf = await crypto.subtle.digest("SHA-256", enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+};
+const fmtPuntos = (n) => Number(n||0).toLocaleString("es-CL");
+const fmtPeso = (n) => `$${Number(n||0).toLocaleString("es-CL")}`;
+
+const G = "#0f4a2c";
+const GM = "#16a34a";
+const GL = "#4ade80";
+
+// ── LOGO SVG INLINE ──────────────────────────────────────────
+const LogoSVG = ({ size = 56 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width={size} height={size}>
+    <defs>
+      <radialGradient id="bgC" cx="40%" cy="35%" r="65%"><stop offset="0%" stopColor="#ffffff"/><stop offset="100%" stopColor="#f0faf3"/></radialGradient>
+      <linearGradient id="cG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#52e07c"/><stop offset="50%" stopColor="#22c55e"/><stop offset="100%" stopColor="#15803d"/></linearGradient>
+      <linearGradient id="cDG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#1ea550"/><stop offset="100%" stopColor="#14532d"/></linearGradient>
+      <linearGradient id="lL" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#86efac"/><stop offset="45%" stopColor="#22c55e"/><stop offset="100%" stopColor="#14532d"/></linearGradient>
+      <linearGradient id="lR" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor="#a7f3c4"/><stop offset="45%" stopColor="#16a34a"/><stop offset="100%" stopColor="#14532d"/></linearGradient>
+      <linearGradient id="lT" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#bbf7d0"/><stop offset="100%" stopColor="#16a34a"/></linearGradient>
+      <linearGradient id="sh" x1="10%" y1="0%" x2="60%" y2="80%"><stop offset="0%" stopColor="#ffffff" stopOpacity="0.55"/><stop offset="100%" stopColor="#ffffff" stopOpacity="0"/></linearGradient>
+      <linearGradient id="rA" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#22c55e" stopOpacity="0.7"/><stop offset="40%" stopColor="#86efac" stopOpacity="0.3"/><stop offset="100%" stopColor="#15803d" stopOpacity="0.6"/></linearGradient>
+      <linearGradient id="lnG" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stopColor="#22c55e" stopOpacity="0"/><stop offset="30%" stopColor="#22c55e" stopOpacity="0.6"/><stop offset="70%" stopColor="#22c55e" stopOpacity="0.6"/><stop offset="100%" stopColor="#22c55e" stopOpacity="0"/></linearGradient>
+      <filter id="lG" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="cS" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="7" floodColor="#15803d" floodOpacity="0.2"/></filter>
+      <filter id="wF"><feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#14532d" floodOpacity="0.18"/></filter>
+      <filter id="tF"><feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#14532d" floodOpacity="0.12"/></filter>
+      <filter id="circF" x="-5%" y="-5%" width="110%" height="110%"><feDropShadow dx="0" dy="6" stdDeviation="12" floodColor="#15803d" floodOpacity="0.14"/></filter>
+      <clipPath id="inn"><circle cx="250" cy="250" r="232"/></clipPath>
+    </defs>
+    <g filter="url(#circF)"><circle cx="250" cy="250" r="240" fill="url(#bgC)"/></g>
+    <circle cx="250" cy="250" r="240" fill="none" stroke="#dcfce7" strokeWidth="4"/>
+    <circle cx="250" cy="250" r="235" fill="none" stroke="url(#rA)" strokeWidth="2"/>
+    <circle cx="250" cy="250" r="226" fill="none" stroke="url(#rA)" strokeWidth="0.8" strokeDasharray="6 12" opacity="0.7"/>
+    <g clipPath="url(#inn)">
+      <circle cx="200" cy="180" r="180" fill="#f0fdf4" opacity="0.45"/>
+      <g><rect x="30" y="132" width="58" height="9.5" rx="4.75" fill="url(#cG)"/><rect x="43" y="152" width="42" height="8" rx="4" fill="url(#cG)" opacity="0.65"/><rect x="56" y="170" width="28" height="6.5" rx="3.25" fill="url(#cG)" opacity="0.38"/></g>
+      <g filter="url(#cS)">
+        <line x1="106" y1="118" x2="366" y2="118" stroke="url(#cG)" strokeWidth="16" strokeLinecap="round"/>
+        <line x1="106" y1="118" x2="106" y2="146" stroke="url(#cG)" strokeWidth="16" strokeLinecap="round"/>
+        <path d="M106 146 L128 228 L358 228 L378 146" fill="none" stroke="url(#cG)" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round"/>
+        <line x1="128" y1="228" x2="358" y2="228" stroke="url(#cDG)" strokeWidth="14" strokeLinecap="round"/>
+        <line x1="148" y1="228" x2="139" y2="256" stroke="url(#cDG)" strokeWidth="13" strokeLinecap="round"/>
+        <line x1="336" y1="228" x2="346" y2="256" stroke="url(#cDG)" strokeWidth="13" strokeLinecap="round"/>
+        <g filter="url(#wF)"><circle cx="151" cy="276" r="21" fill="white" stroke="url(#cDG)" strokeWidth="11"/><circle cx="151" cy="276" r="9" fill="none" stroke="url(#cG)" strokeWidth="2.5" opacity="0.5"/><circle cx="151" cy="276" r="4.5" fill="url(#cG)"/></g>
+        <g filter="url(#wF)"><circle cx="325" cy="276" r="21" fill="white" stroke="url(#cDG)" strokeWidth="11"/><circle cx="325" cy="276" r="9" fill="none" stroke="url(#cG)" strokeWidth="2.5" opacity="0.5"/><circle cx="325" cy="276" r="4.5" fill="url(#cG)"/></g>
+      </g>
+      <line x1="250" y1="186" x2="250" y2="118" stroke="#16a34a" strokeWidth="5.5" strokeLinecap="round"/>
+      <g filter="url(#lG)">
+        <path d="M250 184 C236 155 204 122 160 112 C174 127 198 144 213 168 C226 186 242 192 250 184 Z" fill="url(#lL)"/>
+        <path d="M250 184 C236 155 204 122 160 112 C174 127 198 144 213 168 C226 186 242 192 250 184 Z" fill="url(#sh)"/>
+        <path d="M250 184 C226 160 196 132 162 114" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M238 180 C226 164 210 148 194 136" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" strokeLinecap="round"/>
+      </g>
+      <g filter="url(#lG)">
+        <path d="M250 184 C264 152 300 118 346 106 C330 122 306 140 292 164 C276 184 260 192 250 184 Z" fill="url(#lR)"/>
+        <path d="M250 184 C264 152 300 118 346 106 C330 122 306 140 292 164 C276 184 260 192 250 184 Z" fill="url(#sh)"/>
+        <path d="M250 184 C274 158 306 126 344 108" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M262 180 C276 164 292 148 308 136" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1" strokeLinecap="round"/>
+      </g>
+      <g filter="url(#lG)" transform="translate(306,64) rotate(-26)">
+        <path d="M0 38 C-4 18 10 1 32 0 C22 10 12 22 7 38 Z" fill="url(#lT)"/>
+        <path d="M0 38 C-4 18 10 1 32 0 C22 10 12 22 7 38 Z" fill="url(#sh)"/>
+        <path d="M0 38 C7 22 18 8 31 1" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.3" strokeLinecap="round"/>
+      </g>
+      <line x1="80" y1="306" x2="420" y2="306" stroke="url(#lnG)" strokeWidth="1.2"/>
+      <text x="250" y="330" fontFamily="Arial, Helvetica, sans-serif" fontSize="11" fontWeight="700" fill="#16a34a" textAnchor="middle" letterSpacing="6" opacity="0.75">MINIMARKET</text>
+      <text x="250" y="392" fontFamily="Arial Black, Arial Bold, Impact, sans-serif" fontSize="76" fontWeight="900" fill="#14532d" textAnchor="middle" letterSpacing="4" filter="url(#tF)">JAVIVI</text>
+      <rect x="112" y="400" width="276" height="3" rx="1.5" fill="url(#lnG)" opacity="0.9"/>
+      <text x="250" y="426" fontFamily="Arial, Helvetica, sans-serif" fontSize="13" fontWeight="600" fill="#15803d" textAnchor="middle" letterSpacing="1.8">Abarrotes · Frutas &amp; Verduras</text>
+    </g>
+  </svg>
+);
+
+const css = `
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: #fff; color: #1a1a1a; }
+  h1,h2,h3,h4 { font-family: 'Playfair Display', serif; }
+  button { cursor: pointer; border: none; outline: none; font-family: 'Inter', sans-serif; }
+  input, textarea, select { font-family: 'Inter', sans-serif; outline: none; }
+  a { text-decoration: none; color: inherit; }
+
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(18px);
+    border-bottom: 1px solid #f0f0f0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 68px;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .nav-brand-name { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #0f4a2c; letter-spacing: 0.3px; }
+  .nav-brand-sub { font-size: 10px; font-weight: 600; color: #16a34a; letter-spacing: 2.5px; text-transform: uppercase; }
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .nav-link { padding: 8px 16px; font-size: 13px; font-weight: 500; color: #555; border-radius: 8px; transition: all 0.2s; background: none; }
+  .nav-link:hover { color: #0f4a2c; background: #f0fdf4; }
+  .nav-cta { background: #0f4a2c; color: white; padding: 9px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; transition: all 0.2s; }
+  .nav-cta:hover { background: #16a34a; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(15,74,44,0.28); }
+
+  .hero {
+    min-height: 90vh; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; text-align: center; padding: 110px 24px 72px;
+    background: #fff; position: relative; overflow: hidden;
+  }
+  .orb { position: absolute; border-radius: 50%; pointer-events: none; filter: blur(90px); opacity: 0.15; }
+  .orb-1 { width: 700px; height: 700px; background: #4ade80; top: -240px; right: -160px; }
+  .orb-2 { width: 480px; height: 480px; background: #16a34a; bottom: -120px; left: -120px; }
+  .hero-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a;
+    padding: 6px 18px; border-radius: 100px; font-size: 11.5px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 28px;
+  }
+  .eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
+  .hero h1 { font-size: clamp(2.8rem, 6vw, 4.8rem); font-weight: 900; color: #0f4a2c; line-height: 1.08; max-width: 680px; margin-bottom: 20px; letter-spacing: -1.5px; }
+  .hero h1 em { font-style: italic; color: #16a34a; }
+  .hero-sub { font-size: 17px; color: #6b7280; max-width: 460px; line-height: 1.75; font-weight: 400; margin-bottom: 40px; }
+  .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
+  .btn-primary { padding: 14px 28px; background: #0f4a2c; color: white; border-radius: 12px; font-size: 15px; font-weight: 600; transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-primary:hover { background: #16a34a; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,74,44,0.3); }
+  .btn-ghost { padding: 14px 28px; background: transparent; color: #0f4a2c; border: 1.5px solid #d1fae5; border-radius: 12px; font-size: 15px; font-weight: 600; transition: all 0.25s; }
+  .btn-ghost:hover { background: #f0fdf4; border-color: #16a34a; }
+  .hero-stats { display: flex; gap: 44px; justify-content: center; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2.1rem; font-weight: 700; color: #0f4a2c; }
+  .stat-lbl { font-size: 11px; color: #9ca3af; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 3px; }
+  .stat-div { width: 1px; height: 44px; background: #e5e7eb; align-self: center; }
+
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, #e5e7eb 30%, #e5e7eb 70%, transparent); }
+
+  .section { padding: 88px 24px; }
+  .section-inner { max-width: 1160px; margin: 0 auto; }
+  .section-header { text-align: center; margin-bottom: 52px; }
+  .s-eyebrow { display: inline-block; color: #16a34a; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+  .s-title { font-size: clamp(1.9rem, 4vw, 2.5rem); font-weight: 700; color: #0f4a2c; line-height: 1.15; }
+  .s-sub { color: #6b7280; font-size: 15.5px; margin-top: 10px; max-width: 440px; margin-left: auto; margin-right: auto; line-height: 1.65; }
+
+  .how-section { background: #0f4a2c; }
+  .how-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .how-item { padding: 52px 36px; border-right: 1px solid rgba(255,255,255,0.07); transition: background 0.2s; }
+  .how-item:last-child { border-right: none; }
+  .how-item:hover { background: rgba(255,255,255,0.04); }
+  .how-num { font-family: 'Playfair Display', serif; font-size: 3.8rem; font-weight: 900; color: #4ade80; opacity: 0.2; line-height: 1; margin-bottom: 18px; }
+  .how-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: white; margin-bottom: 10px; }
+  .how-desc { font-size: 13.5px; color: rgba(255,255,255,0.55); line-height: 1.75; }
+
+  .promo-section { background: #f8fafc; }
+  .promo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 20px; }
+  .promo-card { background: white; border-radius: 18px; overflow: hidden; border: 1px solid #f0f0f0; transition: all 0.25s; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .promo-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.09); }
+  .promo-img { width: 100%; height: 180px; overflow: hidden; background: linear-gradient(135deg,#fee2e2,#fecaca); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+  .promo-img img { width: 100%; height: 100%; object-fit: cover; }
+  .promo-body { padding: 18px; }
+  .promo-tag { display: inline-block; background: #fef2f2; color: #dc2626; font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 100px; letter-spacing: 1px; margin-bottom: 8px; }
+  .promo-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+  .promo-prices { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .price-old { text-decoration: line-through; color: #9ca3af; font-size: 13px; }
+  .price-new { font-size: 22px; font-weight: 800; color: #dc2626; font-family: 'Playfair Display', serif; }
+
+  .filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 44px; }
+  .f-btn { padding: 9px 20px; border-radius: 100px; font-size: 13px; font-weight: 500; transition: all 0.2s; background: #f9fafb; color: #6b7280; border: 1.5px solid #efefef; }
+  .f-btn:hover { background: #f0fdf4; color: #0f4a2c; border-color: #bbf7d0; }
+  .f-btn.active { background: #0f4a2c; color: white; border-color: #0f4a2c; box-shadow: 0 4px 12px rgba(15,74,44,0.22); }
+
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 28px; }
+  .prod-card { background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #f0f0f0; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 1px 4px rgba(0,0,0,0.04); position: relative; }
+  .prod-card:hover { transform: translateY(-6px); box-shadow: 0 18px 44px rgba(15,74,44,0.12); border-color: #d1fae5; }
+  .prod-img { width: 100%; height: 220px; overflow: hidden; background: linear-gradient(135deg,#f0fdf4,#dcfce7); display: flex; align-items: center; justify-content: center; }
+  .prod-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.45s ease; }
+  .prod-card:hover .prod-img img { transform: scale(1.05); }
+  .prod-placeholder { font-size: 56px; opacity: 0.35; }
+  .prod-body { padding: 22px; }
+  .prod-cat { font-size: 10.5px; font-weight: 700; color: #16a34a; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+  .prod-name { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #0f4a2c; margin-bottom: 8px; line-height: 1.22; }
+  .prod-desc { font-size: 13.5px; color: #6b7280; line-height: 1.65; margin-bottom: 18px; }
+  .dest-badge { position: absolute; top: 14px; left: 14px; background: #0f4a2c; color: white; font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 100px; letter-spacing: 1.2px; z-index: 2; }
+
+  /* LA FIRMA: badge puntos efecto moneda */
+  .pts-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, #fef9c3 0%, #fef08a 40%, #fde047 100%);
+    border: 1px solid #fbbf24; color: #78350f;
+    padding: 9px 18px; border-radius: 100px;
+    font-size: 14px; font-weight: 700;
+    box-shadow: 0 2px 10px rgba(251,191,36,0.28), inset 0 1px 0 rgba(255,255,255,0.65);
+    position: relative; overflow: hidden;
+  }
+  .pts-badge::after { content: ''; position: absolute; top: 0; left: -70%; width: 40%; height: 100%; background: linear-gradient(90deg,transparent,rgba(255,255,255,0.55),transparent); animation: shimmer 3.2s ease-in-out infinite; }
+  @keyframes shimmer { 0% { left: -70%; } 100% { left: 150%; } }
+
+  .empty { text-align: center; padding: 72px 24px; color: #9ca3af; grid-column: 1/-1; }
+  .empty div { font-size: 48px; margin-bottom: 12px; }
+
+  .contact-section { background: #fff; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; max-width: 960px; margin: 0 auto; }
+  .contact-info h3 { font-size: 1.6rem; font-weight: 700; color: #0f4a2c; margin-bottom: 14px; }
+  .contact-info p { color: #6b7280; font-size: 15px; line-height: 1.75; margin-bottom: 28px; }
+  .c-item { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; font-size: 14px; color: #374151; }
+  .c-icon { width: 38px; height: 38px; border-radius: 10px; background: #f0fdf4; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+  .c-tip { margin-top: 28px; padding: 18px 20px; background: #f0fdf4; border-radius: 14px; border: 1px solid #d1fae5; font-size: 13.5px; color: #15803d; line-height: 1.7; }
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 11.5px; font-weight: 700; color: #374151; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 7px; }
+  .form-input { width: 100%; padding: 11px 16px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-size: 14px; transition: all 0.2s; background: #fafafa; color: #1a1a1a; }
+  .form-input:focus { border-color: #16a34a; background: #fff; box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
+  .form-textarea { width: 100%; padding: 11px 16px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-size: 14px; resize: vertical; min-height: 110px; background: #fafafa; color: #1a1a1a; transition: all 0.2s; }
+  .form-textarea:focus { border-color: #16a34a; background: #fff; box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
+  .btn-submit { width: 100%; padding: 13px; background: #0f4a2c; color: white; border-radius: 10px; font-size: 15px; font-weight: 600; transition: all 0.25s; letter-spacing: 0.2px; }
+  .btn-submit:hover { background: #16a34a; box-shadow: 0 6px 20px rgba(15,74,44,0.28); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .wa-float { position: fixed; bottom: 28px; right: 28px; z-index: 200; width: 58px; height: 58px; background: #25d366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.45); transition: transform 0.25s, box-shadow 0.25s; }
+  .wa-float:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(37,211,102,0.65); }
+
+  .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #0f4a2c; color: white; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 500; z-index: 500; box-shadow: 0 4px 18px rgba(0,0,0,0.15); animation: tin 0.3s ease; white-space: nowrap; }
+  @keyframes tin { from { opacity:0; transform: translateX(-50%) translateY(8px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+
+  /* ADMIN */
+  .admin-wrap { display: flex; min-height: 100vh; padding-top: 68px; }
+  .admin-side { width: 252px; background: #0f4a2c; position: fixed; top: 68px; left: 0; bottom: 0; overflow-y: auto; z-index: 90; padding: 20px 0; }
+  .side-logo { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px; }
+  .side-lbl { color: rgba(255,255,255,0.35); font-size: 10.5px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; margin-top: 4px; }
+  .side-item { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: rgba(255,255,255,0.55); font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.2s; border-left: 2.5px solid transparent; }
+  .side-item:hover { background: rgba(255,255,255,0.07); color: white; }
+  .side-item.active { background: rgba(74,222,128,0.1); color: #4ade80; border-left-color: #4ade80; }
+  .admin-content { margin-left: 252px; flex: 1; padding: 36px 32px; background: #f8fafc; min-height: 100vh; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #0f4a2c; margin-bottom: 28px; }
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px,1fr)); gap: 16px; margin-bottom: 28px; }
+  .s-box { background: white; border-radius: 14px; padding: 22px; border: 1px solid #e5e7eb; }
+  .s-box-ic { font-size: 22px; margin-bottom: 8px; }
+  .s-box-val { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: #0f4a2c; }
+  .s-box-lbl { font-size: 11.5px; color: #9ca3af; font-weight: 500; margin-top: 2px; }
+  .panel { background: white; border-radius: 16px; border: 1px solid #e5e7eb; overflow: hidden; margin-bottom: 24px; }
+  .panel-hd { padding: 16px 22px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+  .panel-ttl { font-size: 14.5px; font-weight: 700; color: #0f4a2c; }
+  .panel-bd { padding: 22px; }
+  .tbl-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { background: #f8fafc; padding: 11px 16px; text-align: left; font-weight: 600; color: #9ca3af; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+  td { padding: 13px 16px; border-top: 1px solid #f5f5f5; color: #374151; }
+  tr:hover td { background: #fafff8; }
+  .btn-s { padding: 6px 13px; border-radius: 7px; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+  .btn-s-p { background: #0f4a2c; color: white; }
+  .btn-s-p:hover { background: #16a34a; }
+  .btn-s-d { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+  .btn-s-d:hover { background: #fee2e2; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+  .bg { background: #dcfce7; color: #16a34a; }
+  .br { background: #fee2e2; color: #dc2626; }
+  .bgr { background: #f3f4f6; color: #6b7280; }
+  .two-col { display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; }
+  .two-col-eq { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  footer { background: #0f4a2c; color: rgba(255,255,255,0.45); padding: 36px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .foot-brand { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: white; }
+  .foot-copy { font-size: 12.5px; margin-top: 3px; }
+  .foot-copy a { color: #4ade80; font-weight: 600; transition: opacity 0.2s; }
+  .foot-copy a:hover { opacity: 0.8; }
+  .foot-links { display: flex; gap: 22px; font-size: 13px; }
+  .foot-links a { color: rgba(255,255,255,0.45); transition: color 0.2s; }
+  .foot-links a:hover { color: #4ade80; }
+
+  @media (max-width: 900px) {
+    .how-grid { grid-template-columns: 1fr 1fr; }
+    .how-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .two-col, .two-col-eq, .contact-grid { grid-template-columns: 1fr; }
+    .admin-side { width: 100%; position: relative; top: 0; }
+    .admin-wrap { flex-direction: column; }
+    .admin-content { margin-left: 0; padding: 20px 16px; }
+  }
+  @media (max-width: 600px) {
+    .nav { padding: 0 16px; }
+    .hero h1 { font-size: 2.4rem; letter-spacing: -0.5px; }
+    .how-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; }
+    .foot-links { justify-content: center; }
+  }
+`;
+
+function Toast({ msg, onClose }) {
+  useEffect(() => { const t = setTimeout(onClose, 3200); return () => clearTimeout(t); }, []);
+  return <div className="toast">{msg}</div>;
+}
+
+function WAFloat() {
+  return (
+    <a className="wa-float" href={`https://wa.me/${WHATSAPP}?text=Hola%20Minimarket%20Javivi%2C%20tengo%20una%20consulta%20sobre%20el%20cat%C3%A1logo%20de%20puntos`} target="_blank" rel="noreferrer" title="WhatsApp">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+  );
+}
+
+function Landing({ productos, categorias, promos }) {
+  const [catSel, setCatSel] = useState("all");
+  const [search, setSearch] = useState("");
+  const [form, setForm] = useState({ nombre: "", email: "", tipo: "consulta", mensaje: "" });
+  const [sending, setSending] = useState(false);
+  const [toast, setToast] = useState(null);
+  const catalogRef = useRef(null);
+  const contactRef = useRef(null);
+
+  const filtered = productos.filter(p =>
+    (catSel === "all" || p.categoria_id === catSel) &&
+    p.nombre.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleContact = async () => {
+    if (!form.nombre.trim() || !form.mensaje.trim()) { setToast("Por favor completa tu nombre y mensaje."); return; }
+    setSending(true);
+    await supabase.from("contacto_mensajes").insert({ nombre_contacto: form.nombre, email_contacto: form.email, tipo: form.tipo, mensaje: form.mensaje });
+    setForm({ nombre: "", email: "", tipo: "consulta", mensaje: "" });
+    setToast("¡Mensaje enviado! Te respondemos pronto 💬");
+    setSending(false);
+  };
+
+  const scrollTo = (ref) => ref.current?.scrollIntoView({ behavior: "smooth" });
+
+  return (
+    <>
+      {/* HERO */}
+      <section className="hero">
+        <div className="orb orb-1"/><div className="orb orb-2"/>
+        <div className="hero-inner">
+          <div style={{ marginBottom: 28 }}><LogoSVG size={108}/></div>
+          <div className="eyebrow"><div className="eyebrow-dot"/>Sistema de Puntos</div>
+          <h1>Tu fidelidad tiene<br/><em>recompensa real</em></h1>
+          <p className="hero-sub">Acumula puntos con cada compra en Minimarket Javivi y canjéalos por productos del catálogo directamente en tienda.</p>
+          <div className="hero-btns">
+            <button className="btn-primary" onClick={() => scrollTo(catalogRef)}>Ver catálogo →</button>
+            <button className="btn-ghost" onClick={() => scrollTo(contactRef)}>Contacto</button>
+          </div>
+          <div className="hero-stats">
+            <div className="stat"><div className="stat-num">{productos.length}</div><div className="stat-lbl">Productos</div></div>
+            <div className="stat-div"/>
+            <div className="stat"><div className="stat-num">{categorias.length}</div><div className="stat-lbl">Categorías</div></div>
+            <div className="stat-div"/>
+            <div className="stat"><div className="stat-num">Gratis</div><div className="stat-lbl">Sin costo</div></div>
+          </div>
+        </div>
+      </section>
+
+      <div className="divider"/>
+
+      {/* CÓMO FUNCIONA */}
+      <section className="section how-section">
+        <div className="section-inner">
+          <div className="section-header">
+            <div className="s-eyebrow" style={{ color: "#4ade80" }}>Simple y transparente</div>
+            <h2 className="s-title" style={{ color: "white" }}>¿Cómo funciona?</h2>
+          </div>
+          <div className="how-grid">
+            {[["01","Compra en Javivi","Realiza tus compras habituales. Cada vez que compras en el minimarket, acumulas puntos automáticamente."],["02","Acumula puntos","Tu saldo de puntos crece con cada visita. Consulta en tienda cuántos puntos tienes disponibles."],["03","Elige tu premio","Revisa este catálogo y escoge el producto que más te guste según tus puntos actuales."],["04","Canjea en tienda","Visítanos con tu nombre y solicita el canje. Sin apps, sin formularios, sin complicaciones."]].map(([n,t,d]) => (
+              <div className="how-item" key={n}><div className="how-num">{n}</div><div className="how-title">{t}</div><div className="how-desc">{d}</div></div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PROMOCIONES */}
+      {promos.length > 0 && (
+        <>
+          <div className="divider"/>
+          <section className="section promo-section">
+            <div className="section-inner">
+              <div className="section-header">
+                <div className="s-eyebrow">Ofertas especiales</div>
+                <h2 className="s-title">Productos en promoción</h2>
+                <p className="s-sub">Precios especiales por tiempo limitado</p>
+              </div>
+              <div className="promo-grid">
+                {promos.map(p => (
+                  <div className="promo-card" key={p.id}>
+                    <div className="promo-img">{p.foto_url ? <img src={p.foto_url} alt={p.nombre}/> : "🔥"}</div>
+                    <div className="promo-body">
+                      <span className="promo-tag">OFERTA</span>
+                      <div className="promo-name">{p.nombre}</div>
+                      {p.descripcion && <p style={{ fontSize: 13, color: "#6b7280", marginTop: 4, lineHeight: 1.5 }}>{p.descripcion}</p>}
+                      <div className="promo-prices">
+                        {p.precio_original && <span className="price-old">{fmtPeso(p.precio_original)}</span>}
+                        <span className="price-new">{fmtPeso(p.precio_oferta)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
+
+      <div className="divider"/>
+
+      {/* CATÁLOGO */}
+      <section className="section" ref={catalogRef} id="catalogo-section">
+        <div className="section-inner">
+          <div className="section-header">
+            <div className="s-eyebrow">Catálogo de canje</div>
+            <h2 className="s-title">¿Qué puedes canjear?</h2>
+            <p className="s-sub">Consulta tus puntos en tienda y escoge tu premio favorito</p>
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 28 }}>
+            <div style={{ position: "relative", width: "100%", maxWidth: 380 }}>
+              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#9ca3af" }}>🔍</span>
+              <input className="form-input" placeholder="Buscar producto..." value={search} onChange={e => setSearch(e.target.value)} style={{ paddingLeft: 40 }}/>
+            </div>
+          </div>
+          <div className="filters">
+            <button className={`f-btn ${catSel === "all" ? "active" : ""}`} onClick={() => setCatSel("all")}>Todos</button>
+            {categorias.map(c => (
+              <button key={c.id} className={`f-btn ${catSel === c.id ? "active" : ""}`} onClick={() => setCatSel(c.id)}>{c.icono} {c.nombre}</button>
+            ))}
+          </div>
+          <div className="products-grid">
+            {filtered.length === 0 ? (
+              <div className="empty"><div>🔍</div><p>No se encontraron productos.</p></div>
+            ) : filtered.map(p => (
+              <div className="prod-card" key={p.id}>
+                {p.destacado && <div className="dest-badge">DESTACADO</div>}
+                <div className="prod-img">
+                  {p.foto_url ? <img src={p.foto_url} alt={p.nombre}/> : <div className="prod-placeholder">🎁</div>}
+                </div>
+                <div className="prod-body">
+                  {p.categorias?.nombre && <div className="prod-cat">{p.categorias.icono} {p.categorias.nombre}</div>}
+                  <div className="prod-name">{p.nombre}</div>
+                  {p.descripcion && <div className="prod-desc">{p.descripcion}</div>}
+                  <div className="pts-badge">⭐ {fmtPuntos(p.puntos_requeridos)} puntos</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div className="divider"/>
+
+      {/* CONTACTO */}
+      <section className="section contact-section" ref={contactRef} id="contacto-section">
+        <div className="section-inner">
+          <div className="section-header">
+            <div className="s-eyebrow">Estamos para ti</div>
+            <h2 className="s-title">Contáctanos</h2>
+            <p className="s-sub">Consultas, sugerencias o reclamos. Te respondemos a la brevedad.</p>
+          </div>
+          <div className="contact-grid">
+            <div className="contact-info">
+              <h3>Minimarket Javivi</h3>
+              <p>Escríbenos si tienes dudas sobre tus puntos, productos del catálogo o cualquier otra consulta. Estamos para ayudarte.</p>
+              <div className="c-item"><div className="c-icon">📍</div><span>Visítanos en nuestra tienda</span></div>
+              <div className="c-item"><div className="c-icon">💬</div><a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" style={{ color: "#16a34a", fontWeight: 600 }}>WhatsApp directo</a></div>
+              <div className="c-item"><div className="c-icon">🎁</div><span>Canje presencial sin costo</span></div>
+              <div className="c-tip"><strong>¿Quieres saber tus puntos?</strong><br/>Visítanos o escríbenos por WhatsApp con tu nombre. Te informamos tu saldo al instante.</div>
+            </div>
+            <div>
+              <div className="form-group"><label className="form-label">Tu nombre *</label><input className="form-input" placeholder="María González" value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })}/></div>
+              <div className="form-group"><label className="form-label">Email (opcional)</label><input className="form-input" type="email" placeholder="maria@correo.cl" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}/></div>
+              <div className="form-group"><label className="form-label">Tipo de mensaje</label>
+                <select className="form-input" value={form.tipo} onChange={e => setForm({ ...form, tipo: e.target.value })}>
+                  <option value="consulta">💬 Consulta</option>
+                  <option value="sugerencia">💡 Sugerencia</option>
+                  <option value="reclamo">⚠️ Reclamo</option>
+                </select>
+              </div>
+              <div className="form-group"><label className="form-label">Mensaje *</label><textarea className="form-textarea" placeholder="Escribe tu mensaje..." value={form.mensaje} onChange={e => setForm({ ...form, mensaje: e.target.value })}/></div>
+              <button className="btn-submit" onClick={handleContact} disabled={sending}>{sending ? "Enviando..." : "Enviar mensaje"}</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {toast && <Toast msg={toast} onClose={() => setToast(null)}/>}
+    </>
+  );
+}
+
+function Admin({ showToast }) {
+  const [user, setUser] = useState(null);
+  const [tab, setTab] = useState("dashboard");
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [loginErr, setLoginErr] = useState("");
+  const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [promos, setPromos] = useState([]);
+  const [mensajes, setMensajes] = useState([]);
+  const [prodForm, setProdForm] = useState({ nombre: "", descripcion: "", puntos_requeridos: 0, categoria_id: "", activo: true, destacado: false });
+  const [promoForm, setPromoForm] = useState({ nombre: "", descripcion: "", precio_original: "", precio_oferta: "", activo: true });
+  const [catForm, setCatForm] = useState({ nombre: "", icono: "🎁" });
+  const [prodFile, setProdFile] = useState(null);
+  const [promoFile, setPromoFile] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  const load = async () => {
+    const [p, c, pr, m] = await Promise.all([
+      supabaseAdmin.from("productos").select("*, categorias(nombre,icono)").order("nombre"),
+      supabaseAdmin.from("categorias").select("*").order("orden"),
+      supabaseAdmin.from("promociones").select("*").order("orden"),
+      supabaseAdmin.from("contacto_mensajes").select("*").order("created_at", { ascending: false }),
+    ]);
+    setProductos(p.data || []);
+    setCategorias(c.data || []);
+    setPromos(pr.data || []);
+    setMensajes(m.data || []);
+  };
+
+  useEffect(() => { if (user) load(); }, [user]);
+
+  const handleLogin = async () => {
+    const hash = await hashPassword(loginData.password);
+    const { data, error } = await supabase.from("admins").select("*").eq("email", loginData.email).eq("password_hash", hash).single();
+    if (error || !data) { setLoginErr("Credenciales incorrectas"); return; }
+    setUser(data);
+  };
+
+  const uploadFoto = async (file, bucket) => {
+    const ext = file.name.split(".").pop();
+    const path = `${Date.now()}.${ext}`;
+    await supabaseAdmin.storage.from(bucket).upload(path, file);
+    const { data } = supabaseAdmin.storage.from(bucket).getPublicUrl(path);
+    return data.publicUrl;
+  };
+
+  const saveProd = async () => {
+    if (!prodForm.nombre.trim()) { showToast("El nombre es obligatorio"); return; }
+    setSaving(true);
+    let foto_url = prodForm.foto_url || null;
+    if (prodFile) foto_url = await uploadFoto(prodFile, "productos");
+    const d = { ...prodForm, foto_url, puntos_requeridos: parseInt(prodForm.puntos_requeridos) || 0 };
+    delete d.categorias;
+    if (prodForm.id) await supabaseAdmin.from("productos").update(d).eq("id", prodForm.id);
+    else await supabaseAdmin.from("productos").insert(d);
+    showToast("Producto guardado ✅");
+    setProdForm({ nombre: "", descripcion: "", puntos_requeridos: 0, categoria_id: "", activo: true, destacado: false });
+    setProdFile(null); load(); setSaving(false);
+  };
+
+  const savePromo = async () => {
+    if (!promoForm.nombre.trim() || !promoForm.precio_oferta) { showToast("Nombre y precio oferta son obligatorios"); return; }
+    setSaving(true);
+    let foto_url = promoForm.foto_url || null;
+    if (promoFile) foto_url = await uploadFoto(promoFile, "promociones");
+    const d = { ...promoForm, foto_url, precio_oferta: parseFloat(promoForm.precio_oferta) || 0, precio_original: parseFloat(promoForm.precio_original) || null };
+    if (promoForm.id) await supabaseAdmin.from("promociones").update(d).eq("id", promoForm.id);
+    else await supabaseAdmin.from("promociones").insert(d);
+    showToast("Promoción guardada ✅");
+    setPromoForm({ nombre: "", descripcion: "", precio_original: "", precio_oferta: "", activo: true });
+    setPromoFile(null); load(); setSaving(false);
+  };
+
+  if (!user) return (
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f8fafc", paddingTop: 68 }}>
+      <div style={{ background: "white", borderRadius: 20, padding: 40, width: "100%", maxWidth: 368, border: "1px solid #e5e7eb", boxShadow: "0 8px 32px rgba(0,0,0,0.06)" }}>
+        <div style={{ textAlign: "center", marginBottom: 28 }}><LogoSVG size={64}/>
+          <h2 style={{ fontFamily: "'Playfair Display',serif", fontSize: 21, color: G, marginTop: 12 }}>Panel Admin</h2>
+          <p style={{ fontSize: 12.5, color: "#9ca3af", marginTop: 4 }}>Minimarket Javivi</p></div>
+        {loginErr && <div style={{ background: "#fee2e2", color: "#dc2626", padding: "10px 14px", borderRadius: 10, fontSize: 13, marginBottom: 16 }}>{loginErr}</div>}
+        <div className="form-group"><label className="form-label">Email</label><input className="form-input" type="email" value={loginData.email} onChange={e => setLoginData({ ...loginData, email: e.target.value })}/></div>
+        <div className="form-group"><label className="form-label">Contraseña</label><input className="form-input" type="password" value={loginData.password} onChange={e => setLoginData({ ...loginData, password: e.target.value })} onKeyDown={e => e.key === "Enter" && handleLogin()}/></div>
+        <button className="btn-submit" onClick={handleLogin}>Ingresar</button>
+      </div>
+    </div>
+  );
+
+  const nav = [["dashboard","📊","Dashboard"],["productos","🎁","Catálogo"],["categorias","🏷️","Categorías"],["promociones","🔥","Promociones"],["mensajes","💬","Mensajes"]];
+
+  return (
+    <div className="admin-wrap">
+      <div className="admin-side">
+        <div className="side-logo"><LogoSVG size={40}/><div className="side-lbl">Admin Panel</div></div>
+        {nav.map(([k,ic,lbl]) => (
+          <div key={k} className={`side-item ${tab===k?"active":""}`} onClick={() => setTab(k)}><span>{ic}</span><span>{lbl}</span></div>
+        ))}
+        <div style={{ marginTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 12 }}>
+          <div className="side-item" onClick={() => setUser(null)}><span>🚪</span><span>Cerrar sesión</span></div>
+        </div>
+      </div>
+      <div className="admin-content">
+
+        {tab === "dashboard" && (<>
+          <h1 className="page-title">Dashboard</h1>
+          <div className="stats-row">
+            {[["🎁",productos.filter(p=>p.activo).length,"Productos activos"],["🔥",promos.filter(p=>p.activo).length,"Promociones activas"],["💬",mensajes.filter(m=>m.estado==="pendiente").length,"Mensajes nuevos"]].map(([ic,v,l])=>(
+              <div className="s-box" key={l}><div className="s-box-ic">{ic}</div><div className="s-box-val">{v}</div><div className="s-box-lbl">{l}</div></div>
+            ))}
+          </div>
+          <div className="panel">
+            <div className="panel-hd"><span className="panel-ttl">Mensajes recientes</span></div>
+            <div className="panel-bd">
+              {mensajes.slice(0,5).map(m=>(
+                <div key={m.id} style={{padding:"12px 0",borderBottom:"1px solid #f5f5f5",display:"flex",justifyContent:"space-between",gap:12}}>
+                  <div><div style={{fontWeight:600,fontSize:14,color:G}}>{m.nombre_contacto}</div><div style={{fontSize:13,color:"#6b7280",marginTop:2}}>{m.mensaje?.slice(0,80)}...</div></div>
+                  <span className={`badge ${m.estado==="pendiente"?"br":"bg"}`}>{m.estado}</span>
+                </div>
+              ))}
+              {mensajes.length===0&&<p style={{color:"#9ca3af",fontSize:14}}>Sin mensajes aún.</p>}
+            </div>
+          </div>
+        </>)}
+
+        {tab === "productos" && (<>
+          <h1 className="page-title">Catálogo de Productos</h1>
+          <div className="two-col">
+            <div className="panel">
+              <div className="panel-hd">
+                <span className="panel-ttl">{prodForm.id?"Editar":"Agregar"} producto</span>
+                {prodForm.id&&<button className="btn-s btn-s-d" onClick={()=>setProdForm({nombre:"",descripcion:"",puntos_requeridos:0,categoria_id:"",activo:true,destacado:false})}>Cancelar</button>}
+              </div>
+              <div className="panel-bd">
+                <div className="form-group"><label className="form-label">Foto del producto</label>
+                  <input type="file" accept="image/*" className="form-input" style={{padding:"7px"}} onChange={e=>setProdFile(e.target.files[0])}/>
+                  {prodForm.foto_url&&<img src={prodForm.foto_url} alt="" style={{width:"100%",height:120,objectFit:"cover",borderRadius:8,marginTop:8}}/>}
+                </div>
+                <div className="form-group"><label className="form-label">Nombre *</label><input className="form-input" placeholder="Ej: Smart TV 40 pulgadas" value={prodForm.nombre} onChange={e=>setProdForm({...prodForm,nombre:e.target.value})}/></div>
+                <div className="form-group"><label className="form-label">Descripción</label><textarea className="form-textarea" style={{minHeight:72}} placeholder="Detalles del producto..." value={prodForm.descripcion} onChange={e=>setProdForm({...prodForm,descripcion:e.target.value})}/></div>
+                <div className="form-group"><label className="form-label">Puntos requeridos *</label><input className="form-input" type="number" placeholder="0" value={prodForm.puntos_requeridos} onChange={e=>setProdForm({...prodForm,puntos_requeridos:e.target.value})}/></div>
+                <div className="form-group"><label className="form-label">Categoría</label>
+                  <select className="form-input" value={prodForm.categoria_id} onChange={e=>setProdForm({...prodForm,categoria_id:e.target.value})}>
+                    <option value="">Sin categoría</option>
+                    {categorias.map(c=><option key={c.id} value={c.id}>{c.icono} {c.nombre}</option>)}
+                  </select>
+                </div>
+                <div style={{display:"flex",gap:20,marginBottom:16}}>
+                  <label style={{display:"flex",gap:7,alignItems:"center",fontSize:13,cursor:"pointer"}}><input type="checkbox" checked={prodForm.activo} onChange={e=>setProdForm({...prodForm,activo:e.target.checked})}/> Activo</label>
+                  <label style={{display:"flex",gap:7,alignItems:"center",fontSize:13,cursor:"pointer"}}><input type="checkbox" checked={prodForm.destacado} onChange={e=>setProdForm({...prodForm,destacado:e.target.checked})}/> Destacado</label>
+                </div>
+                <button className="btn-submit" onClick={saveProd} disabled={saving}>{saving?"Guardando...":prodForm.id?"Actualizar producto":"Agregar producto"}</button>
+              </div>
+            </div>
+            <div className="panel">
+              <div className="panel-hd"><span className="panel-ttl">Productos ({productos.length})</span></div>
+              <div className="tbl-wrap">
+                <table>
+                  <thead><tr><th>Producto</th><th>Puntos</th><th>Estado</th><th></th></tr></thead>
+                  <tbody>
+                    {productos.map(p=>(
+                      <tr key={p.id}>
+                        <td>
+                          <div style={{display:"flex",alignItems:"center",gap:10}}>
+                            <div style={{width:40,height:40,borderRadius:8,background:"#f0fdf4",overflow:"hidden",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>
+                              {p.foto_url?<img src={p.foto_url} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:"🎁"}
+                            </div>
+                            <div><div style={{fontWeight:600,fontSize:13,color:G}}>{p.nombre}</div><div style={{fontSize:11,color:"#9ca3af"}}>{p.categorias?.icono} {p.categorias?.nombre||"Sin categoría"}</div></div>
+                          </div>
+                        </td>
+                        <td><span style={{fontWeight:700,color:"#78350f",fontSize:13}}>⭐ {fmtPuntos(p.puntos_requeridos)}</span></td>
+                        <td><span className={`badge ${p.activo?"bg":"bgr"}`}>{p.activo?"Activo":"Oculto"}</span></td>
+                        <td><div style={{display:"flex",gap:6}}>
+                          <button className="btn-s btn-s-p" onClick={()=>setProdForm({...p,categoria_id:p.categoria_id||""})}>Editar</button>
+                          <button className="btn-s btn-s-d" onClick={async()=>{await supabaseAdmin.from("productos").delete().eq("id",p.id);showToast("Eliminado");load();}}>✕</button>
+                        </div></td>
+                      </tr>
+                    ))}
+                    {productos.length===0&&<tr><td colSpan={4} style={{textAlign:"center",color:"#9ca3af",padding:36}}>Sin productos aún.</td></tr>}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </>)}
+
+        {tab === "categorias" && (<>
+          <h1 className="page-title">Categorías</h1>
+          <div className="two-col-eq">
+            <div className="panel">
+              <div className="panel-hd"><span className="panel-ttl">Nueva categoría</span></div>
+              <div className="panel-bd">
+                <div className="form-group"><label className="form-label">Nombre</label><input className="form-input" placeholder="Ej: Línea Blanca" value={catForm.nombre} onChange={e=>setCatForm({...catForm,nombre:e.target.value})}/></div>
+                <div className="form-group"><label className="form-label">Icono (emoji)</label><input className="form-input" value={catForm.icono} onChange={e=>setCatForm({...catForm,icono:e.target.value})}/></div>
+                <button className="btn-submit" onClick={async()=>{if(!catForm.nombre.trim())return;await supabaseAdmin.from("categorias").insert(catForm);showToast("Categoría creada ✅");setCatForm({nombre:"",icono:"🎁"});load();}}>Agregar categoría</button>
+              </div>
+            </div>
+            <div className="panel">
+              <div className="panel-hd"><span className="panel-ttl">Categorías ({categorias.length})</span></div>
+              <div className="panel-bd">
+                {categorias.map(c=>(
+                  <div key={c.id} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0",borderBottom:"1px solid #f5f5f5"}}>
+                    <span style={{fontSize:15}}>{c.icono} <strong>{c.nombre}</strong></span>
+                    <button className="btn-s btn-s-d" onClick={async()=>{await supabaseAdmin.from("categorias").delete().eq("id",c.id);showToast("Eliminada");load();}}>✕</button>
+                  </div>
+                ))}
+                {categorias.length===0&&<p style={{color:"#9ca3af",fontSize:14}}>Sin categorías aún.</p>}
+              </div>
+            </div>
+          </div>
+        </>)}
+
+        {tab === "promociones" && (<>
+          <h1 className="page-title">Promociones</h1>
+          <div className="two-col">
+            <div className="panel">
+              <div className="panel-hd">
+                <span className="panel-ttl">{promoForm.id?"Editar":"Nueva"} promoción</span>
+                {promoForm.id&&<button className="btn-s btn-s-d" onClick={()=>setPromoForm({nombre:"",descripcion:"",precio_original:"",precio_oferta:"",activo:true})}>Cancelar</button>}
+              </div>
+              <div className="panel-bd">
+                <div className="form-group"><label className="form-label">Foto</label><input type="file" accept="image/*" className="form-input" style={{padding:"7px"}} onChange={e=>setPromoFile(e.target.files[0])}/></div>
+                <div className="form-group"><label className="form-label">Nombre *</label><input className="form-input" value={promoForm.nombre} onChange={e=>setPromoForm({...promoForm,nombre:e.target.value})}/></div>
+                <div className="form-group"><label className="form-label">Descripción</label><textarea className="form-textarea" style={{minHeight:64}} value={promoForm.descripcion} onChange={e=>setPromoForm({...promoForm,descripcion:e.target.value})}/></div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                  <div className="form-group"><label className="form-label">Precio original</label><input className="form-input" type="number" placeholder="0" value={promoForm.precio_original} onChange={e=>setPromoForm({...promoForm,precio_original:e.target.value})}/></div>
+                  <div className="form-group"><label className="form-label">Precio oferta *</label><input className="form-input" type="number" placeholder="0" value={promoForm.precio_oferta} onChange={e=>setPromoForm({...promoForm,precio_oferta:e.target.value})}/></div>
+                </div>
+                <label style={{display:"flex",gap:7,alignItems:"center",fontSize:13,cursor:"pointer",marginBottom:16}}><input type="checkbox" checked={promoForm.activo} onChange={e=>setPromoForm({...promoForm,activo:e.target.checked})}/> Activa</label>
+                <button className="btn-submit" onClick={savePromo} disabled={saving}>{saving?"Guardando...":promoForm.id?"Actualizar":"Crear promoción"}</button>
+              </div>
+            </div>
+            <div className="panel">
+              <div className="panel-hd"><span className="panel-ttl">Promociones ({promos.length})</span></div>
+              <div className="tbl-wrap">
+                <table>
+                  <thead><tr><th>Nombre</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
+                  <tbody>
+                    {promos.map(p=>(
+                      <tr key={p.id}>
+                        <td style={{fontWeight:600,fontSize:13}}>{p.nombre}</td>
+                        <td><span style={{fontWeight:700,color:"#dc2626"}}>{fmtPeso(p.precio_oferta)}</span></td>
+                        <td><span className={`badge ${p.activo?"bg":"bgr"}`}>{p.activo?"Activa":"Inactiva"}</span></td>
+                        <td><div style={{display:"flex",gap:6}}>
+                          <button className="btn-s btn-s-p" onClick={()=>setPromoForm({...p})}>Editar</button>
+                          <button className="btn-s btn-s-d" onClick={async()=>{await supabaseAdmin.from("promociones").delete().eq("id",p.id);showToast("Eliminada");load();}}>✕</button>
+                        </div></td>
+                      </tr>
+                    ))}
+                    {promos.length===0&&<tr><td colSpan={4} style={{textAlign:"center",color:"#9ca3af",padding:32}}>Sin promociones aún.</td></tr>}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </>)}
+
+        {tab === "mensajes" && (<>
+          <h1 className="page-title">Mensajes de clientes</h1>
+          <div className="panel">
+            <div className="panel-bd">
+              {mensajes.map(m=>(
+                <div key={m.id} style={{padding:"18px 0",borderBottom:"1px solid #f5f5f5"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:8,marginBottom:8}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+                      <span style={{fontWeight:700,color:G,fontSize:14}}>{m.nombre_contacto}</span>
+                      <span className={`badge ${m.tipo==="reclamo"?"br":m.tipo==="sugerencia"?"bgr":"bg"}`}>{m.tipo==="reclamo"?"⚠️ Reclamo":m.tipo==="sugerencia"?"💡 Sugerencia":"💬 Consulta"}</span>
+                      <span className={`badge ${m.estado==="pendiente"?"br":"bg"}`}>{m.estado}</span>
+                    </div>
+                    <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                      <span style={{fontSize:11.5,color:"#9ca3af"}}>{new Date(m.created_at).toLocaleDateString("es-CL")}</span>
+                      {m.estado==="pendiente"&&<button className="btn-s btn-s-p" onClick={async()=>{await supabaseAdmin.from("contacto_mensajes").update({estado:"leido"}).eq("id",m.id);showToast("Marcado como leído");load();}}>Marcar leído</button>}
+                    </div>
+                  </div>
+                  <p style={{fontSize:14,color:"#374151",background:"#f8fafc",padding:"10px 14px",borderRadius:10,lineHeight:1.65}}>{m.mensaje}</p>
+                  {m.email_contacto&&<p style={{fontSize:12,color:"#9ca3af",marginTop:6}}>📧 {m.email_contacto}</p>}
+                </div>
+              ))}
+              {mensajes.length===0&&<div style={{textAlign:"center",padding:40,color:"#9ca3af"}}><div style={{fontSize:40,marginBottom:8}}>💬</div><p>Sin mensajes aún.</p></div>}
+            </div>
+          </div>
+        </>)}
+
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [view, setView] = useState("landing");
+  const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [promos, setPromos] = useState([]);
+  const [toast, setToast] = useState(null);
+  const showToast = (msg) => setToast(msg);
+
+  useEffect(() => {
+    Promise.all([
+      supabase.from("productos").select("*, categorias(nombre,icono)").eq("activo", true).order("puntos_requeridos"),
+      supabase.from("categorias").select("*").eq("activo", true).order("orden"),
+      supabase.from("promociones").select("*").eq("activo", true).order("orden"),
+    ]).then(([p, c, pr]) => {
+      setProductos(p.data || []);
+      setCategorias(c.data || []);
+      setPromos(pr.data || []);
+    });
+  }, []);
+
+  return (
+    <>
+      <style>{css}</style>
+      <nav className="nav">
+        <div className="nav-brand" onClick={() => setView("landing")}>
+          <LogoSVG size={44}/>
+          <div>
+            <div className="nav-brand-name">Javivi</div>
+            <div className="nav-brand-sub">Minimarket</div>
+          </div>
+        </div>
+        <div className="nav-links">
+          <button className="nav-link" onClick={() => { setView("landing"); setTimeout(()=>document.getElementById("catalogo-section")?.scrollIntoView({behavior:"smooth"}),100); }}>Catálogo</button>
+          <button className="nav-link" onClick={() => { setView("landing"); setTimeout(()=>document.getElementById("contacto-section")?.scrollIntoView({behavior:"smooth"}),100); }}>Contacto</button>
+          <button className="nav-cta" onClick={() => setView("admin")}>Admin →</button>
+        </div>
+      </nav>
+
+      {view === "landing" && (
+        <div style={{ paddingTop: 68 }}>
+          <Landing productos={productos} categorias={categorias} promos={promos}/>
+          <footer>
+            <div>
+              <div className="foot-brand">Minimarket Javivi</div>
+              <div className="foot-copy">© {new Date().getFullYear()} Todos los derechos reservados · Desarrollo web por <a href="https://www.tempvs7.cl" target="_blank" rel="noreferrer">TEMPVS7</a></div>
+            </div>
+            <div className="foot-links">
+              <a onClick={() => document.getElementById("catalogo-section")?.scrollIntoView({behavior:"smooth"})} style={{cursor:"pointer"}}>Catálogo</a>
+              <a onClick={() => document.getElementById("contacto-section")?.scrollIntoView({behavior:"smooth"})} style={{cursor:"pointer"}}>Contacto</a>
+              <a href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer">WhatsApp</a>
+            </div>
+          </footer>
+        </div>
+      )}
+
+      {view === "admin" && (
+        <div style={{ paddingTop: 68 }}>
+          <Admin showToast={showToast}/>
+        </div>
+      )}
+
+      <WAFloat/>
+      {toast && <Toast msg={toast} onClose={() => setToast(null)}/>}
+    </>
+  );
+}
