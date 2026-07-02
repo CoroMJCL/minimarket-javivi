@@ -17,7 +17,6 @@ const hashPassword = async (pw) => {
 const fmtPuntos = (n) => Number(n||0).toLocaleString("es-CL");
 const fmtPeso = (n) => `$${Number(n||0).toLocaleString("es-CL")}`;
 
-
 const G = "#0a2e1e";
 const GM = "#16a34a";
 const GL = "#4ade80";
@@ -216,42 +215,91 @@ const css = `
   .price-new { font-size: 26px; font-weight: 900; color: #dc2626; font-family: 'Playfair Display', Georgia, serif; }
 
   /* CATALOGO */
-  .cat-section { background: #fff; }
-  .filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px; }
-  .f-btn {
-    padding: 10px 22px; border-radius: 100px; font-size: 13px; font-weight: 600;
-    transition: all 0.2s; background: #f4f4f5; color: #52525b;
-    border: 1.5px solid transparent;
-  }
-  .f-btn:hover { background: #f0fdf4; color: #0a2e1e; border-color: #bbf7d0; }
-  .f-btn.active { background: #0a2e1e; color: white; border-color: #0a2e1e; box-shadow: 0 4px 16px rgba(10,46,30,0.25); }
+  .cat-section { background: #fafaf9; }
 
-  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 32px; }
-  .prod-card {
-    background: #fff; border-radius: 24px; overflow: hidden;
-    border: 1px solid #f0f0f0; transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative;
+  /* Barra categorías tipo navegación editorial */
+  .cat-nav {
+    display: flex; align-items: center; border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 56px; gap: 0; overflow-x: auto;
+    scrollbar-width: none; -ms-overflow-style: none;
   }
-  .prod-card:hover { transform: translateY(-8px); box-shadow: 0 24px 56px rgba(10,46,30,0.14); border-color: #d1fae5; }
+  .cat-nav::-webkit-scrollbar { display: none; }
+  .cat-nav-item {
+    padding: 16px 28px; font-size: 13px; font-weight: 600; color: #9ca3af;
+    white-space: nowrap; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: all 0.2s; background: none; letter-spacing: 0.3px;
+  }
+  .cat-nav-item:hover { color: #0a2e1e; }
+  .cat-nav-item.active { color: #0a2e1e; border-bottom-color: #0a2e1e; font-weight: 700; }
+
+  /* Search premium */
+  .search-wrap {
+    display: flex; align-items: center; gap: 16px;
+    background: white; border: 1px solid #e5e7eb; border-radius: 16px;
+    padding: 14px 20px; max-width: 500px; margin: 0 auto 40px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04); transition: all 0.2s;
+  }
+  .search-wrap:focus-within { border-color: #0a2e1e; box-shadow: 0 4px 20px rgba(10,46,30,0.08); }
+  .search-wrap input { border: none; background: none; font-size: 15px; color: #1a1a1a; width: 100%; }
+  .search-wrap input::placeholder { color: #9ca3af; }
+
+  /* Grid productos — layout editorial tipo revista */
+  .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .prod-card {
+    background: white; overflow: hidden; position: relative;
+    transition: all 0.35s cubic-bezier(0.4,0,0.2,1); cursor: default;
+  }
+  .prod-card:hover { z-index: 2; }
+
+  /* Imagen cuadrada perfecta 1:1 */
   .prod-img {
-    width: 100%; height: 260px; overflow: hidden;
-    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    width: 100%; aspect-ratio: 1/1; overflow: hidden;
+    background: #f5f5f0;
     display: flex; align-items: center; justify-content: center; position: relative;
   }
-  .prod-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
-  .prod-card:hover .prod-img img { transform: scale(1.06); }
-  .prod-placeholder { font-size: 72px; opacity: 0.25; }
+  .prod-img img {
+    width: 100%; height: 100%; object-fit: contain;
+    padding: 20px;
+    transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    background: #f5f5f0;
+  }
+  .prod-card:hover .prod-img img { transform: scale(1.08); }
+  .prod-placeholder { font-size: 80px; opacity: 0.15; }
+
+  /* Overlay elegante en hover */
   .prod-img-overlay {
     position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(10,46,30,0.3) 0%, transparent 50%);
-    opacity: 0; transition: opacity 0.3s;
+    background: linear-gradient(to top, rgba(10,46,30,0.6) 0%, rgba(10,46,30,0.1) 50%, transparent 100%);
+    opacity: 0; transition: opacity 0.35s;
+    display: flex; align-items: flex-end; padding: 24px;
   }
   .prod-card:hover .prod-img-overlay { opacity: 1; }
-  .prod-body { padding: 24px 26px 28px; }
-  .prod-cat { font-size: 10px; font-weight: 800; color: #16a34a; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 8px; }
-  .prod-name { font-family: 'Playfair Display', Georgia, serif; font-size: 21px; font-weight: 700; color: #0a2e1e; margin-bottom: 10px; line-height: 1.2; }
-  .prod-desc { font-size: 14px; color: #6b7280; line-height: 1.7; margin-bottom: 20px; }
-  .dest-badge { position: absolute; top: 16px; left: 16px; background: #0a2e1e; color: #4ade80; font-size: 10px; font-weight: 800; padding: 5px 14px; border-radius: 100px; letter-spacing: 1.5px; z-index: 2; }
+  .prod-overlay-pts {
+    background: #4ade80; color: #0a2e1e; padding: 8px 18px;
+    border-radius: 100px; font-size: 13px; font-weight: 800;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+
+  .prod-body { padding: 20px 24px 24px; border-bottom: 1px solid #f0f0f0; }
+  .prod-cat { font-size: 10px; font-weight: 800; color: #16a34a; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .prod-name { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #0a2e1e; margin-bottom: 6px; line-height: 1.25; }
+  .prod-desc { font-size: 13px; color: #9ca3af; line-height: 1.6; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .dest-badge { position: absolute; top: 14px; right: 14px; background: #0a2e1e; color: #4ade80; font-size: 9px; font-weight: 800; padding: 5px 12px; border-radius: 100px; letter-spacing: 1.5px; z-index: 2; }
+
+  /* Badge puntos rediseñado — más minimalista */
+  .pts-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #fffbeb; border: 1px solid #fde68a; color: #92400e;
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 14px; font-weight: 800; letter-spacing: 0.3px;
+    position: relative; overflow: hidden;
+  }
+  .pts-badge::after {
+    content: ''; position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  @keyframes shimmer { 0% { left: -80%; } 100% { left: 160%; } }
 
   /* BADGE PUNTOS — GOLD COIN */
   .pts-badge {
@@ -375,7 +423,8 @@ const css = `
     .how-grid { grid-template-columns: 1fr; }
     footer { flex-direction: column; text-align: center; padding: 32px 24px; }
     .foot-links { justify-content: center; }
-    .products-grid { grid-template-columns: 1fr; }
+    .products-grid { grid-template-columns: 1fr 1fr; }
+    .cat-nav-item { padding: 14px 16px; font-size: 12px; }
   }
 `;
 
@@ -498,44 +547,69 @@ function Landing({ productos, categorias, promos }) {
       <div className="divider"/>
 
       {/* CATÁLOGO */}
-      <section className="section cat-section" ref={catalogRef} id="catalogo-section">
-        <div className="section-inner">
-          <div className="section-header">
-            <div className="s-tag">Catálogo de canje</div>
-            <h2 className="s-title">¿Qué puedes canjear?</h2>
-            <p className="s-sub">Consulta tus puntos en tienda y escoge tu premio favorito</p>
+      <section className="section cat-section" ref={catalogRef} id="catalogo-section" style={{padding:"80px 0"}}>
+        {/* Header */}
+        <div style={{textAlign:"center",padding:"0 24px",marginBottom:48}}>
+          <div className="s-tag">Catálogo de canje</div>
+          <h2 className="s-title">¿Qué puedes canjear?</h2>
+          <p className="s-sub">Consulta tus puntos en tienda y escoge tu premio favorito</p>
+        </div>
+
+        {/* Search */}
+        <div style={{padding:"0 24px",maxWidth:1200,margin:"0 auto 0"}}>
+          <div className="search-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input placeholder="Buscar producto en el catálogo..." value={search} onChange={e=>setSearch(e.target.value)}/>
+            {search && <button onClick={()=>setSearch("")} style={{background:"none",border:"none",color:"#9ca3af",fontSize:18,cursor:"pointer",lineHeight:1}}>×</button>}
           </div>
-          <div style={{display:"flex",justifyContent:"center",marginBottom:32}}>
-            <div style={{position:"relative",width:"100%",maxWidth:420}}>
-              <span style={{position:"absolute",left:16,top:"50%",transform:"translateY(-50%)",color:"#9ca3af",fontSize:18}}>🔍</span>
-              <input className="form-input" placeholder="Buscar producto..." value={search} onChange={e=>setSearch(e.target.value)} style={{paddingLeft:48,borderRadius:100,fontSize:15}}/>
-            </div>
-          </div>
-          <div className="filters">
-            <button className={`f-btn ${catSel==="all"?"active":""}`} onClick={()=>setCatSel("all")}>Todos</button>
+        </div>
+
+        {/* Categorías — nav horizontal tipo menú */}
+        <div style={{maxWidth:1200,margin:"0 auto"}}>
+          <div className="cat-nav" style={{padding:"0 24px"}}>
+            <button className={`cat-nav-item ${catSel==="all"?"active":""}`} onClick={()=>setCatSel("all")}>
+              Todos ({productos.length})
+            </button>
             {categorias.map(c=>(
-              <button key={c.id} className={`f-btn ${catSel===c.id?"active":""}`} onClick={()=>setCatSel(c.id)}>{c.icono} {c.nombre}</button>
+              <button key={c.id} className={`cat-nav-item ${catSel===c.id?"active":""}`} onClick={()=>setCatSel(c.id)}>
+                {c.icono} {c.nombre}
+              </button>
             ))}
           </div>
-          <div className="products-grid">
-            {filtered.length===0 ? (
-              <div className="empty"><div className="empty-icon">🔍</div><p>No se encontraron productos.</p></div>
-            ) : filtered.map(p=>(
-              <div className="prod-card" key={p.id}>
-                {p.destacado && <div className="dest-badge">⭐ DESTACADO</div>}
-                <div className="prod-img">
-                  {p.foto_url ? <img src={p.foto_url} alt={p.nombre}/> : <div className="prod-placeholder">🎁</div>}
-                  <div className="prod-img-overlay"/>
+        </div>
+
+        {/* Grid — layout tipo tienda de lujo */}
+        <div style={{maxWidth:1200,margin:"0 auto",padding:"0 24px"}}>
+          {filtered.length===0 ? (
+            <div className="empty" style={{gridColumn:"1/-1"}}>
+              <div className="empty-icon">🔍</div>
+              <p>No se encontraron productos en esta categoría.</p>
+            </div>
+          ) : (
+            <div className="products-grid">
+              {filtered.map(p=>(
+                <div className="prod-card" key={p.id}>
+                  {p.destacado && <div className="dest-badge">⭐ DESTACADO</div>}
+                  {/* Imagen cuadrada 1:1 con object-fit: contain */}
+                  <div className="prod-img">
+                    {p.foto_url
+                      ? <img src={p.foto_url} alt={p.nombre}/>
+                      : <div className="prod-placeholder">🎁</div>
+                    }
+                    <div className="prod-img-overlay">
+                      <span className="prod-overlay-pts">⭐ {fmtPuntos(p.puntos_requeridos)} pts</span>
+                    </div>
+                  </div>
+                  <div className="prod-body">
+                    {p.categorias?.nombre && <div className="prod-cat">{p.categorias.icono} {p.categorias.nombre}</div>}
+                    <div className="prod-name">{p.nombre}</div>
+                    {p.descripcion && <div className="prod-desc">{p.descripcion}</div>}
+                    <div className="pts-badge">⭐ {fmtPuntos(p.puntos_requeridos)} puntos</div>
+                  </div>
                 </div>
-                <div className="prod-body">
-                  {p.categorias?.nombre && <div className="prod-cat">{p.categorias.icono} {p.categorias.nombre}</div>}
-                  <div className="prod-name">{p.nombre}</div>
-                  {p.descripcion && <div className="prod-desc">{p.descripcion}</div>}
-                  <div className="pts-badge">⭐ {fmtPuntos(p.puntos_requeridos)} puntos</div>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
