@@ -17,6 +17,7 @@ const hashPassword = async (pw) => {
 const fmtPuntos = (n) => Number(n||0).toLocaleString("es-CL");
 const fmtPeso = (n) => `$${Number(n||0).toLocaleString("es-CL")}`;
 
+
 const G = "#0a2e1e";
 const GM = "#16a34a";
 const GL = "#4ade80";
