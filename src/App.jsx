@@ -829,7 +829,7 @@ function Landing({ productos, categorias, promos }) {
 function Admin({ showToast }) {
   const [user, setUser] = useState(null);
   const [tab, setTab] = useState("dashboard");
-  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [clave, setClave] = useState("");
   const [loginErr, setLoginErr] = useState("");
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
@@ -855,16 +855,18 @@ function Admin({ showToast }) {
   useEffect(() => { if (user) load(); }, [user]);
 
   const handleLogin = async () => {
-    const hash = await hashPassword(loginData.password);
-    const { data, error } = await supabaseAdmin.from("admins").select("*").eq("email",loginData.email).eq("password_hash",hash).single();
-    if (error||!data) { setLoginErr("Credenciales incorrectas"); return; }
+    if (!clave.trim()) { setLoginErr("Ingresa tu clave"); return; }
+    const hash = await hashPassword(clave);
+    const { data, error } = await supabaseAdmin.from("admins").select("*").eq("password_hash", hash).single();
+    if (error || !data) { setLoginErr("Clave incorrecta"); return; }
     setUser(data);
   };
 
   const uploadFoto = async (file, bucket) => {
     const ext = file.name.split(".").pop();
-    const path = `${Date.now()}.${ext}`;
-    await supabaseAdmin.storage.from(bucket).upload(path, file);
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error } = await supabaseAdmin.storage.from(bucket).upload(path, file, { upsert: true });
+    if (error) { showToast(`Error subiendo foto: ${error.message}`); return null; }
     const { data } = supabaseAdmin.storage.from(bucket).getPublicUrl(path);
     return data.publicUrl;
   };
@@ -898,14 +900,26 @@ function Admin({ showToast }) {
 
   if (!user) return (
     <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(135deg,#071a10,#0a2e1e)",paddingTop:72}}>
-      <div style={{background:"white",borderRadius:24,padding:48,width:"100%",maxWidth:380,boxShadow:"0 24px 80px rgba(0,0,0,0.3)"}}>
-        <div style={{textAlign:"center",marginBottom:32}}><LogoSVG size={72}/>
-          <h2 style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:23,color:G,marginTop:14}}>Panel Admin</h2>
-          <p style={{fontSize:13,color:"#9ca3af",marginTop:4}}>Minimarket Javivi</p></div>
-        {loginErr && <div style={{background:"#fee2e2",color:"#dc2626",padding:"12px 16px",borderRadius:12,fontSize:13,marginBottom:18}}>{loginErr}</div>}
-        <div className="form-group"><label className="form-label">Email</label><input className="form-input" type="email" value={loginData.email} onChange={e=>setLoginData({...loginData,email:e.target.value})}/></div>
-        <div className="form-group"><label className="form-label">Contraseña</label><input className="form-input" type="password" value={loginData.password} onChange={e=>setLoginData({...loginData,password:e.target.value})} onKeyDown={e=>e.key==="Enter"&&handleLogin()}/></div>
-        <button className="btn-submit" onClick={handleLogin}>Ingresar</button>
+      <div style={{background:"white",borderRadius:24,padding:48,width:"100%",maxWidth:340,boxShadow:"0 24px 80px rgba(0,0,0,0.3)"}}>
+        <div style={{textAlign:"center",marginBottom:32}}>
+          <div style={{fontSize:40,marginBottom:12}}>🔐</div>
+          <h2 style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:22,color:G}}>Panel Admin</h2>
+          <p style={{fontSize:13,color:"#9ca3af",marginTop:4}}>Minimarket Javivi</p>
+        </div>
+        {loginErr && <div style={{background:"#fee2e2",color:"#dc2626",padding:"10px 14px",borderRadius:10,fontSize:13,marginBottom:16,textAlign:"center"}}>{loginErr}</div>}
+        <div className="form-group">
+          <label className="form-label">Clave de acceso</label>
+          <input
+            className="form-input" type="password"
+            placeholder="••••••••"
+            value={clave}
+            onChange={e=>setClave(e.target.value)}
+            onKeyDown={e=>e.key==="Enter"&&handleLogin()}
+            style={{textAlign:"center",fontSize:20,letterSpacing:6}}
+            autoFocus
+          />
+        </div>
+        <button className="btn-submit" onClick={handleLogin}>Ingresar →</button>
       </div>
     </div>
   );
