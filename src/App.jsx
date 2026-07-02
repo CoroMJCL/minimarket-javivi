@@ -283,7 +283,10 @@ const css = `
   .prod-body { padding: 20px 24px 24px; border-bottom: 1px solid #f0f0f0; }
   .prod-cat { font-size: 10px; font-weight: 800; color: #16a34a; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 6px; }
   .prod-name { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #0a2e1e; margin-bottom: 6px; line-height: 1.25; }
-  .prod-desc { font-size: 13px; color: #9ca3af; line-height: 1.6; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .prod-desc { font-size: 13px; color: #9ca3af; line-height: 1.6; margin-bottom: 8px; }
+  .prod-desc-short { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .prod-desc-toggle { background: none; border: none; color: #16a34a; font-size: 12px; font-weight: 700; cursor: pointer; padding: 0 0 14px; letter-spacing: 0.3px; display: flex; align-items: center; gap: 4px; }
+  .prod-desc-toggle:hover { color: #0a2e1e; }
   .dest-badge { position: absolute; top: 14px; right: 14px; background: #0a2e1e; color: #4ade80; font-size: 9px; font-weight: 800; padding: 5px 12px; border-radius: 100px; letter-spacing: 1.5px; z-index: 2; }
 
   /* Badge puntos rediseñado — más minimalista */
@@ -450,7 +453,8 @@ function Landing({ productos, categorias, promos }) {
   const catalogRef = useRef(null);
   const contactRef = useRef(null);
 
-  const filtered = productos.filter(p =>
+  const [expandedCards, setExpandedCards] = useState({});
+  const toggleDesc = (id) => setExpandedCards(prev => ({...prev, [id]: !prev[id]}));
     (catSel === "all" || p.categoria_id === catSel) &&
     p.nombre.toLowerCase().includes(search.toLowerCase())
   );
@@ -603,7 +607,14 @@ function Landing({ productos, categorias, promos }) {
                   <div className="prod-body">
                     {p.categorias?.nombre && <div className="prod-cat">{p.categorias.icono} {p.categorias.nombre}</div>}
                     <div className="prod-name">{p.nombre}</div>
-                    {p.descripcion && <div className="prod-desc">{p.descripcion}</div>}
+                    {p.descripcion && (<>
+                      <div className={`prod-desc ${expandedCards[p.id]?"":"prod-desc-short"}`} style={{transition:"all 0.3s ease"}}>{p.descripcion}</div>
+                      {p.descripcion.length > 80 && (
+                        <button className="prod-desc-toggle" onClick={()=>toggleDesc(p.id)}>
+                          {expandedCards[p.id] ? <>Ver menos ↑</> : <>Ver más ↓</>}
+                        </button>
+                      )}
+                    </>)}
                     <div className="pts-badge">⭐ {fmtPuntos(p.puntos_requeridos)} puntos</div>
                   </div>
                 </div>
