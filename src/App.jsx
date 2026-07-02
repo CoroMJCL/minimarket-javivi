@@ -215,111 +215,107 @@ const css = `
   .price-new { font-size: 26px; font-weight: 900; color: #dc2626; font-family: 'Playfair Display', Georgia, serif; }
 
   /* CATALOGO */
-  .cat-section { background: #fafaf9; }
+  .cat-section { background: #f5f5f5; }
 
-  /* Barra categorías tipo navegación editorial */
-  .cat-nav {
-    display: flex; align-items: center; border-bottom: 1px solid #e5e7eb;
-    margin-bottom: 56px; gap: 0; overflow-x: auto;
-    scrollbar-width: none; -ms-overflow-style: none;
-  }
-  .cat-nav::-webkit-scrollbar { display: none; }
-  .cat-nav-item {
-    padding: 16px 28px; font-size: 13px; font-weight: 600; color: #9ca3af;
-    white-space: nowrap; border-bottom: 2px solid transparent;
-    margin-bottom: -1px; transition: all 0.2s; background: none; letter-spacing: 0.3px;
-  }
-  .cat-nav-item:hover { color: #0a2e1e; }
-  .cat-nav-item.active { color: #0a2e1e; border-bottom-color: #0a2e1e; font-weight: 700; }
-
-  /* Search premium */
+  /* Search */
   .search-wrap {
-    display: flex; align-items: center; gap: 16px;
-    background: white; border: 1px solid #e5e7eb; border-radius: 16px;
-    padding: 14px 20px; max-width: 500px; margin: 0 auto 40px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04); transition: all 0.2s;
+    display: flex; align-items: center; gap: 12px;
+    background: white; border: 1.5px solid #e5e7eb; border-radius: 12px;
+    padding: 12px 18px; max-width: 520px; margin: 0 auto 32px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.2s;
   }
-  .search-wrap:focus-within { border-color: #0a2e1e; box-shadow: 0 4px 20px rgba(10,46,30,0.08); }
-  .search-wrap input { border: none; background: none; font-size: 15px; color: #1a1a1a; width: 100%; }
+  .search-wrap:focus-within { border-color: #0a2e1e; box-shadow: 0 4px 16px rgba(10,46,30,0.08); }
+  .search-wrap input { border: none; background: none; font-size: 14px; color: #1a1a1a; width: 100%; }
   .search-wrap input::placeholder { color: #9ca3af; }
 
-  /* Grid productos — layout editorial tipo revista */
-  .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-  .prod-card {
-    background: white; overflow: hidden; position: relative;
-    transition: all 0.35s cubic-bezier(0.4,0,0.2,1); cursor: default;
+  /* Categorías — tabs con borde tipo botón pill */
+  .cat-tabs {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 32px;
   }
-  .prod-card:hover { z-index: 2; }
+  .cat-tab {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: 100px;
+    font-size: 13.5px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; border: 2px solid #e5e7eb;
+    background: white; color: #6b7280; white-space: nowrap;
+  }
+  .cat-tab:hover { border-color: #0a2e1e; color: #0a2e1e; }
+  .cat-tab.active { background: #0a2e1e; color: white; border-color: #0a2e1e; box-shadow: 0 4px 14px rgba(10,46,30,0.2); }
+  .cat-tab-icon { font-size: 16px; }
+  .cat-tab-count { font-size: 11px; opacity: 0.6; margin-left: 2px; }
 
-  /* Imagen cuadrada perfecta 1:1 */
+  /* Grid productos estilo tienda */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .prod-card {
+    background: white; border-radius: 16px; overflow: hidden; position: relative;
+    border: 1px solid #e8e8e8;
+    transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .prod-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); border-color: #d1fae5; }
+
+  /* Imagen cuadrada con fondo blanco limpio */
   .prod-img {
     width: 100%; aspect-ratio: 1/1; overflow: hidden;
-    background: #f5f5f0;
+    background: #ffffff; border-bottom: 1px solid #f0f0f0;
     display: flex; align-items: center; justify-content: center; position: relative;
+    padding: 16px;
   }
   .prod-img img {
     width: 100%; height: 100%; object-fit: contain;
-    padding: 20px;
-    transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
-    background: #f5f5f0;
+    transition: transform 0.4s ease;
   }
-  .prod-card:hover .prod-img img { transform: scale(1.08); }
-  .prod-placeholder { font-size: 80px; opacity: 0.15; }
+  .prod-card:hover .prod-img img { transform: scale(1.06); }
+  .prod-placeholder { font-size: 64px; opacity: 0.15; }
 
-  /* Overlay elegante en hover */
-  .prod-img-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, rgba(10,46,30,0.6) 0%, rgba(10,46,30,0.1) 50%, transparent 100%);
-    opacity: 0; transition: opacity 0.35s;
-    display: flex; align-items: flex-end; padding: 24px;
+  /* Badge vigencia tipo Cencosud */
+  .prod-vigencia {
+    position: absolute; top: 10px; left: 10px;
+    background: #f0fdf4; color: #16a34a;
+    font-size: 10px; font-weight: 700; padding: 3px 10px;
+    border-radius: 100px; border: 1px solid #bbf7d0;
+    letter-spacing: 0.3px;
   }
-  .prod-card:hover .prod-img-overlay { opacity: 1; }
-  .prod-overlay-pts {
-    background: #4ade80; color: #0a2e1e; padding: 8px 18px;
-    border-radius: 100px; font-size: 13px; font-weight: 800;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  .dest-badge {
+    position: absolute; top: 10px; right: 10px;
+    background: #0a2e1e; color: #4ade80;
+    font-size: 9px; font-weight: 800; padding: 4px 10px;
+    border-radius: 100px; letter-spacing: 1px; z-index: 2;
   }
 
-  .prod-body { padding: 20px 24px 24px; border-bottom: 1px solid #f0f0f0; }
-  .prod-cat { font-size: 10px; font-weight: 800; color: #16a34a; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 6px; }
-  .prod-name { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #0a2e1e; margin-bottom: 6px; line-height: 1.25; }
-  .prod-desc { font-size: 13px; color: #9ca3af; line-height: 1.6; margin-bottom: 8px; }
+  .prod-body { padding: 14px 16px 16px; }
+  .prod-cat { font-size: 10px; font-weight: 700; color: #16a34a; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+  .prod-name { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; line-height: 1.35; }
+  .prod-desc { font-size: 12px; color: #9ca3af; line-height: 1.55; margin-bottom: 6px; }
   .prod-desc-short { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .prod-desc-toggle { background: none; border: none; color: #16a34a; font-size: 12px; font-weight: 700; cursor: pointer; padding: 0 0 14px; letter-spacing: 0.3px; display: flex; align-items: center; gap: 4px; }
+  .prod-desc-toggle { background: none; border: none; color: #16a34a; font-size: 11px; font-weight: 700; cursor: pointer; padding: 2px 0 10px; display: flex; align-items: center; gap: 4px; }
   .prod-desc-toggle:hover { color: #0a2e1e; }
-  .dest-badge { position: absolute; top: 14px; right: 14px; background: #0a2e1e; color: #4ade80; font-size: 9px; font-weight: 800; padding: 5px 12px; border-radius: 100px; letter-spacing: 1.5px; z-index: 2; }
 
-  /* Badge puntos rediseñado — más minimalista */
+  /* Badge puntos — estilo Cencosud: número grande + estrella */
   .pts-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: #fffbeb; border: 1px solid #fde68a; color: #92400e;
-    padding: 8px 16px; border-radius: 8px;
-    font-size: 14px; font-weight: 800; letter-spacing: 0.3px;
-    position: relative; overflow: hidden;
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 8px;
   }
-  .pts-badge::after {
-    content: ''; position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
-    animation: shimmer 3s ease-in-out infinite;
+  .pts-num {
+    font-size: 22px; font-weight: 900; color: #0a2e1e;
+    font-family: 'Playfair Display', Georgia, serif; line-height: 1;
   }
-  @keyframes shimmer { 0% { left: -80%; } 100% { left: 160%; } }
-
-  /* BADGE PUNTOS — GOLD COIN */
-  .pts-badge {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 40%, #fde68a 100%);
-    border: 1.5px solid #f59e0b; color: #78350f;
-    padding: 10px 20px; border-radius: 100px;
-    font-size: 15px; font-weight: 800;
-    box-shadow: 0 4px 16px rgba(245,158,11,0.2), inset 0 1px 0 rgba(255,255,255,0.8);
-    position: relative; overflow: hidden; letter-spacing: 0.3px;
+  .pts-label {
+    font-size: 11px; font-weight: 700; color: #6b7280;
+    text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;
   }
-  .pts-badge::after {
-    content: ''; position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-    animation: shimmer 3s ease-in-out infinite;
+  .pts-star {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(245,158,11,0.3);
   }
-  @keyframes shimmer { 0% { left: -80%; } 100% { left: 160%; } }
 
   .empty { text-align: center; padding: 80px 24px; color: #9ca3af; grid-column: 1/-1; }
   .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.4; }
@@ -451,8 +447,8 @@ const css = `
     .how-grid { grid-template-columns: 1fr; }
     footer { flex-direction: column; text-align: center; padding: 32px 24px; }
     .foot-links { justify-content: center; }
-    .products-grid { grid-template-columns: 1fr 1fr; }
-    .cat-nav-item { padding: 14px 16px; font-size: 12px; }
+    .products-grid { grid-template-columns: repeat(2, 1fr); }
+    .cat-tab { padding: 8px 14px; font-size: 12px; }
   }
 `;
 
@@ -579,70 +575,71 @@ function Landing({ productos, categorias, promos }) {
 
       {/* CATÁLOGO */}
       <section className="section cat-section" ref={catalogRef} id="catalogo-section" style={{padding:"80px 0"}}>
-        {/* Header */}
         <div style={{textAlign:"center",padding:"0 24px",marginBottom:48}}>
           <div className="s-tag">Catálogo de canje</div>
           <h2 className="s-title">¿Qué puedes canjear?</h2>
           <p className="s-sub">Consulta tus puntos en tienda y escoge tu premio favorito</p>
         </div>
 
-        {/* Search */}
-        <div style={{padding:"0 24px",maxWidth:1200,margin:"0 auto 0"}}>
-          <div className="search-wrap">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            <input placeholder="Buscar producto en el catálogo..." value={search} onChange={e=>setSearch(e.target.value)}/>
-            {search && <button onClick={()=>setSearch("")} style={{background:"none",border:"none",color:"#9ca3af",fontSize:18,cursor:"pointer",lineHeight:1}}>×</button>}
-          </div>
-        </div>
-
-        {/* Categorías — nav horizontal tipo menú */}
-        <div style={{maxWidth:1200,margin:"0 auto"}}>
-          <div className="cat-nav" style={{padding:"0 24px"}}>
-            <button className={`cat-nav-item ${catSel==="all"?"active":""}`} onClick={()=>setCatSel("all")}>
-              Todos ({productos.length})
-            </button>
-            {categorias.map(c=>(
-              <button key={c.id} className={`cat-nav-item ${catSel===c.id?"active":""}`} onClick={()=>setCatSel(c.id)}>
-                {c.icono} {c.nombre}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Grid — layout tipo tienda de lujo */}
         <div style={{maxWidth:1200,margin:"0 auto",padding:"0 24px"}}>
+          {/* Search */}
+          <div className="search-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input placeholder="Buscar producto..." value={search} onChange={e=>setSearch(e.target.value)}/>
+            {search && <button onClick={()=>setSearch("")} style={{background:"none",border:"none",color:"#9ca3af",fontSize:20,cursor:"pointer",lineHeight:1,padding:0}}>×</button>}
+          </div>
+
+          {/* Categorías — pills con ícono */}
+          <div className="cat-tabs">
+            <button className={`cat-tab ${catSel==="all"?"active":""}`} onClick={()=>setCatSel("all")}>
+              <span className="cat-tab-icon">🏪</span>
+              Todos
+              <span className="cat-tab-count">({productos.length})</span>
+            </button>
+            {categorias.map(c => {
+              const count = productos.filter(p=>p.categoria_id===c.id).length;
+              return (
+                <button key={c.id} className={`cat-tab ${catSel===c.id?"active":""}`} onClick={()=>setCatSel(c.id)}>
+                  <span className="cat-tab-icon">{c.icono}</span>
+                  {c.nombre}
+                  <span className="cat-tab-count">({count})</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Grid */}
           {filtered.length===0 ? (
-            <div className="empty" style={{gridColumn:"1/-1"}}>
-              <div className="empty-icon">🔍</div>
-              <p>No se encontraron productos en esta categoría.</p>
-            </div>
+            <div className="empty"><div className="empty-icon">🔍</div><p>No se encontraron productos.</p></div>
           ) : (
             <div className="products-grid">
               {filtered.map(p=>(
                 <div className="prod-card" key={p.id}>
                   {p.destacado && <div className="dest-badge">⭐ DESTACADO</div>}
-                  {/* Imagen cuadrada 1:1 con object-fit: contain */}
                   <div className="prod-img">
                     {p.foto_url
                       ? <img src={p.foto_url} alt={p.nombre}/>
                       : <div className="prod-placeholder">🎁</div>
                     }
-                    <div className="prod-img-overlay">
-                      <span className="prod-overlay-pts">⭐ {fmtPuntos(p.puntos_requeridos)} pts</span>
-                    </div>
                   </div>
                   <div className="prod-body">
                     {p.categorias?.nombre && <div className="prod-cat">{p.categorias.icono} {p.categorias.nombre}</div>}
                     <div className="prod-name">{p.nombre}</div>
                     {p.descripcion && (<>
-                      <div className={`prod-desc ${expandedCards[p.id]?"":"prod-desc-short"}`} style={{transition:"all 0.3s ease"}}>{p.descripcion}</div>
-                      {p.descripcion.length > 80 && (
+                      <div className={`prod-desc ${expandedCards[p.id]?"":"prod-desc-short"}`}>{p.descripcion}</div>
+                      {p.descripcion.length > 60 && (
                         <button className="prod-desc-toggle" onClick={()=>toggleDesc(p.id)}>
-                          {expandedCards[p.id] ? <>Ver menos ↑</> : <>Ver más ↓</>}
+                          {expandedCards[p.id]?"Ver menos ↑":"Ver más ↓"}
                         </button>
                       )}
                     </>)}
-                    <div className="pts-badge">⭐ {fmtPuntos(p.puntos_requeridos)} puntos</div>
+                    <div className="pts-badge">
+                      <div className="pts-star">⭐</div>
+                      <div>
+                        <div className="pts-num">{fmtPuntos(p.puntos_requeridos)}</div>
+                        <div className="pts-label">puntos</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
