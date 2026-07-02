@@ -199,20 +199,109 @@ const css = `
   .how-title { font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-weight: 700; color: white; margin-bottom: 12px; }
   .how-desc { font-size: 13.5px; color: rgba(255,255,255,0.45); line-height: 1.8; }
 
-  /* PROMOS */
-  .promo-section { background: #f8fafc; }
-  .promo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 24px; }
-  .promo-card { background: white; border-radius: 20px; overflow: hidden; border: 1px solid #f0f0f0; transition: all 0.3s; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
-  .promo-card:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(0,0,0,0.1); }
-  .promo-img { width: 100%; height: 200px; overflow: hidden; background: linear-gradient(135deg,#fee2e2,#fecaca); display: flex; align-items: center; justify-content: center; font-size: 56px; }
-  .promo-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
-  .promo-card:hover .promo-img img { transform: scale(1.05); }
-  .promo-body { padding: 20px 22px; }
-  .promo-tag { display: inline-block; background: #fef2f2; color: #dc2626; font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 100px; letter-spacing: 1.5px; margin-bottom: 10px; }
-  .promo-name { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
-  .promo-prices { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
-  .price-old { text-decoration: line-through; color: #9ca3af; font-size: 14px; }
-  .price-new { font-size: 26px; font-weight: 900; color: #dc2626; font-family: 'Playfair Display', Georgia, serif; }
+  /* CARRUSEL PROMOCIONES */
+  .carrusel-wrap {
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #15803d 0%, #16a34a 40%, #22c55e 100%);
+    margin: 0;
+  }
+  .carrusel-inner {
+    display: flex; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  .carrusel-slide {
+    min-width: 100%; display: flex; align-items: center;
+    padding: 40px 60px; gap: 48px; position: relative; overflow: hidden;
+    min-height: 220px;
+  }
+  .carrusel-slide::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 50%, rgba(255,255,255,0.08) 0%, transparent 60%);
+  }
+  .carrusel-img-wrap {
+    flex-shrink: 0; width: 160px; height: 160px;
+    background: rgba(255,255,255,0.15); border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.25);
+    overflow: hidden; position: relative; z-index: 1;
+  }
+  .carrusel-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 12px; }
+  .carrusel-img-placeholder { font-size: 64px; }
+  .carrusel-content { flex: 1; position: relative; z-index: 1; }
+  .carrusel-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.2); color: white;
+    padding: 4px 14px; border-radius: 100px; font-size: 11px;
+    font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.3);
+  }
+  .carrusel-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; color: white;
+    line-height: 1.15; margin-bottom: 12px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .carrusel-desc { font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 16px; line-height: 1.5; max-width: 420px; }
+  .carrusel-prices { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .carrusel-price-old { font-size: 16px; color: rgba(255,255,255,0.55); text-decoration: line-through; }
+  .carrusel-price-new {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.2rem; font-weight: 900; color: white;
+    background: rgba(0,0,0,0.15); padding: 4px 20px; border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+  .carrusel-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: white; color: #15803d; padding: 12px 24px;
+    border-radius: 12px; font-size: 14px; font-weight: 800;
+    transition: all 0.2s; cursor: pointer; border: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .carrusel-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+
+  /* Decoración derecha */
+  .carrusel-deco {
+    position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
+    width: 200px; text-align: right; z-index: 1;
+  }
+  .carrusel-deco-equiv {
+    background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 16px; padding: 16px 20px; color: white; text-align: center;
+    backdrop-filter: blur(8px);
+  }
+  .carrusel-deco-equiv .num { font-family: 'Playfair Display', Georgia, serif; font-size: 1.6rem; font-weight: 900; }
+  .carrusel-deco-equiv .sep { font-size: 18px; margin: 4px 0; opacity: 0.7; }
+  .carrusel-deco-equiv .price { font-size: 1.4rem; font-weight: 900; color: #bbf7d0; }
+
+  /* Controles carrusel */
+  .carrusel-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4);
+    color: white; font-size: 18px; cursor: pointer; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; backdrop-filter: blur(4px);
+  }
+  .carrusel-btn:hover { background: rgba(255,255,255,0.35); transform: translateY(-50%) scale(1.05); }
+  .carrusel-btn-prev { left: 16px; }
+  .carrusel-btn-next { right: 16px; }
+
+  /* Dots */
+  .carrusel-dots {
+    position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 6px; z-index: 10;
+  }
+  .carrusel-dot {
+    width: 8px; height: 8px; border-radius: 100px;
+    background: rgba(255,255,255,0.4); transition: all 0.3s; cursor: pointer;
+  }
+  .carrusel-dot.active { background: white; width: 24px; }
+
+  @media (max-width: 768px) {
+    .carrusel-slide { flex-direction: column; padding: 28px 24px; gap: 20px; min-height: auto; }
+    .carrusel-img-wrap { width: 120px; height: 120px; }
+    .carrusel-deco { display: none; }
+    .carrusel-price-new { font-size: 1.6rem; }
+  }
 
   /* CATALOGO */
   .cat-section { background: #f5f5f5; }
@@ -465,6 +554,83 @@ function WAFloat() {
   );
 }
 
+function PromoCarrusel({ promos, waNumber }) {
+  const [idx, setIdx] = useState(0);
+  const timerRef = useRef(null);
+
+  const goTo = (i) => {
+    setIdx((i + promos.length) % promos.length);
+  };
+
+  useEffect(() => {
+    timerRef.current = setInterval(() => setIdx(p => (p + 1) % promos.length), 5000);
+    return () => clearInterval(timerRef.current);
+  }, [promos.length]);
+
+  const reset = (fn) => { clearInterval(timerRef.current); fn(); timerRef.current = setInterval(() => setIdx(p => (p + 1) % promos.length), 5000); };
+
+  return (
+    <div className="carrusel-wrap">
+      <div className="carrusel-inner" style={{ transform: `translateX(-${idx * 100}%)` }}>
+        {promos.map((p, i) => (
+          <div className="carrusel-slide" key={p.id}>
+            {/* Imagen */}
+            <div className="carrusel-img-wrap">
+              {p.foto_url ? <img src={p.foto_url} alt={p.nombre}/> : <div className="carrusel-img-placeholder">🔥</div>}
+            </div>
+
+            {/* Contenido */}
+            <div className="carrusel-content">
+              <div className="carrusel-tag">🔥 Oferta especial</div>
+              <div className="carrusel-name">{p.nombre}</div>
+              {p.descripcion && <div className="carrusel-desc">{p.descripcion}</div>}
+              <div className="carrusel-prices">
+                {p.precio_original && <span className="carrusel-price-old">{fmtPeso(p.precio_original)}</span>}
+                <span className="carrusel-price-new">{fmtPeso(p.precio_oferta)}</span>
+              </div>
+              <a href={`https://wa.me/${waNumber}?text=Hola%2C%20me%20interesa%20la%20oferta%20de%20${encodeURIComponent(p.nombre)}`}
+                target="_blank" rel="noreferrer">
+                <button className="carrusel-cta">💬 Consultar por WhatsApp →</button>
+              </a>
+            </div>
+
+            {/* Deco derecha */}
+            <div className="carrusel-deco">
+              <div className="carrusel-deco-equiv">
+                <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.7)",letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>Ahorra con tu descuento</div>
+                <div className="num">{fmtPeso(p.precio_original || p.precio_oferta)}</div>
+                <div className="sep">↓</div>
+                <div className="price">{fmtPeso(p.precio_oferta)}</div>
+                {p.precio_original && (
+                  <div style={{marginTop:8,background:"rgba(0,0,0,0.15)",borderRadius:8,padding:"4px 10px",fontSize:12,color:"#bbf7d0",fontWeight:700}}>
+                    Ahorra {fmtPeso(p.precio_original - p.precio_oferta)}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Número slide */}
+            <div style={{position:"absolute",top:16,right:16,color:"rgba(255,255,255,0.4)",fontSize:12,fontWeight:700,zIndex:1}}>
+              {i + 1} / {promos.length}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Botones prev/next */}
+      {promos.length > 1 && (<>
+        <button className="carrusel-btn carrusel-btn-prev" onClick={() => reset(() => goTo(idx - 1))}>‹</button>
+        <button className="carrusel-btn carrusel-btn-next" onClick={() => reset(() => goTo(idx + 1))}>›</button>
+        <div className="carrusel-dots">
+          {promos.map((_, i) => (
+            <div key={i} className={`carrusel-dot ${i === idx ? "active" : ""}`} onClick={() => reset(() => setIdx(i))}/>
+          ))}
+        </div>
+      </>)}
+    </div>
+  );
+}
+
 function Landing({ productos, categorias, promos }) {
   const [catSel, setCatSel] = useState("all");
   const [search, setSearch] = useState("");
@@ -539,37 +705,8 @@ function Landing({ productos, categorias, promos }) {
         </div>
       </section>
 
-      {/* PROMOCIONES */}
-      {promos.length > 0 && (
-        <>
-          <div className="divider"/>
-          <section className="section promo-section">
-            <div className="section-inner">
-              <div className="section-header">
-                <div className="s-tag">Ofertas especiales</div>
-                <h2 className="s-title">Productos en promoción</h2>
-                <p className="s-sub">Precios especiales por tiempo limitado. ¡No te los pierdas!</p>
-              </div>
-              <div className="promo-grid">
-                {promos.map(p => (
-                  <div className="promo-card" key={p.id}>
-                    <div className="promo-img">{p.foto_url ? <img src={p.foto_url} alt={p.nombre}/> : "🔥"}</div>
-                    <div className="promo-body">
-                      <span className="promo-tag">OFERTA</span>
-                      <div className="promo-name">{p.nombre}</div>
-                      {p.descripcion && <p style={{fontSize:13,color:"#6b7280",marginTop:4,lineHeight:1.6}}>{p.descripcion}</p>}
-                      <div className="promo-prices">
-                        {p.precio_original && <span className="price-old">{fmtPeso(p.precio_original)}</span>}
-                        <span className="price-new">{fmtPeso(p.precio_oferta)}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        </>
-      )}
+      {/* CARRUSEL PROMOCIONES */}
+      {promos.length > 0 && <PromoCarrusel promos={promos} waNumber={WHATSAPP}/>}
 
       <div className="divider"/>
 
