@@ -455,6 +455,8 @@ function Landing({ productos, categorias, promos }) {
 
   const [expandedCards, setExpandedCards] = useState({});
   const toggleDesc = (id) => setExpandedCards(prev => ({...prev, [id]: !prev[id]}));
+
+  const filtered = productos.filter(p =>
     (catSel === "all" || p.categoria_id === catSel) &&
     p.nombre.toLowerCase().includes(search.toLowerCase())
   );
