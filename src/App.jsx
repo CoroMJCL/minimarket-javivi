@@ -361,23 +361,48 @@ const css = `
 
   /* ADMIN */
   .admin-wrap { display: flex; min-height: 100vh; padding-top: 72px; }
-  .admin-side { width: 260px; background: #071a10; position: fixed; top: 72px; left: 0; bottom: 0; overflow-y: auto; z-index: 90; padding: 24px 0; border-right: 1px solid rgba(74,222,128,0.08); }
-  .side-logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 12px; }
-  .side-lbl { color: rgba(255,255,255,0.25); font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-top: 6px; }
-  .side-item { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: rgba(255,255,255,0.5); font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.2s; border-left: 3px solid transparent; }
-  .side-item:hover { background: rgba(74,222,128,0.06); color: rgba(255,255,255,0.85); }
-  .side-item.active { background: rgba(74,222,128,0.1); color: #4ade80; border-left-color: #4ade80; }
-  .admin-content { margin-left: 260px; flex: 1; padding: 40px 36px; background: #f8fafc; min-height: 100vh; }
+  .admin-side {
+    width: 240px; background: #ffffff; position: fixed; top: 72px; left: 0; bottom: 0;
+    overflow-y: auto; z-index: 90; padding: 20px 0;
+    border-right: 1px solid #e5e7eb;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.04);
+  }
+  .side-section-lbl { padding: 16px 20px 8px; font-size: 10px; font-weight: 800; color: #9ca3af; letter-spacing: 2px; text-transform: uppercase; }
+  .side-item {
+    display: flex; align-items: center; gap: 10px; padding: 11px 20px;
+    color: #6b7280; font-size: 13.5px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent;
+  }
+  .side-item:hover { background: #f9fafb; color: #0a2e1e; }
+  .side-item.active { background: #f0fdf4; color: #0a2e1e; border-left-color: #16a34a; font-weight: 700; }
+  .side-item span:first-child { font-size: 16px; width: 22px; text-align: center; }
+  .admin-content { margin-left: 240px; flex: 1; padding: 40px 36px; background: #f8fafc; min-height: 100vh; }
   .page-title { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; font-weight: 700; color: #0a2e1e; margin-bottom: 32px; }
   .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 18px; margin-bottom: 32px; }
   .s-box { background: white; border-radius: 16px; padding: 24px; border: 1px solid #e5e7eb; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
   .s-box-ic { font-size: 24px; margin-bottom: 10px; }
   .s-box-val { font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; font-weight: 700; color: #0a2e1e; }
-  .s-box-lbl { font-size: 12px; color: #9ca3af; font-weight: 600; margin-top: 3px; letter-spacing: 0.3px; }
-  .panel { background: white; border-radius: 18px; border: 1px solid #e5e7eb; overflow: hidden; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-  .panel-hd { padding: 18px 24px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
-  .panel-ttl { font-size: 15px; font-weight: 700; color: #0a2e1e; }
+  .s-box-lbl { font-size: 12px; color: #9ca3af; font-weight: 600; margin-top: 3px; }
+  .panel { background: white; border-radius: 16px; border: 1px solid #e5e7eb; overflow: hidden; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .panel-hd { padding: 16px 24px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; background: #fafafa; }
+  .panel-ttl { font-size: 14px; font-weight: 700; color: #0a2e1e; }
   .panel-bd { padding: 24px; }
+  .tbl-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { background: #f8fafc; padding: 12px 18px; text-align: left; font-weight: 700; color: #6b7280; font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; border-bottom: 1px solid #e5e7eb; }
+  td { padding: 14px 18px; border-top: 1px solid #f5f5f5; color: #374151; vertical-align: middle; }
+  tr:hover td { background: #fafff8; }
+  .btn-s { padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; transition: all 0.2s; }
+  .btn-s-p { background: #0a2e1e; color: white; }
+  .btn-s-p:hover { background: #16a34a; }
+  .btn-s-d { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+  .btn-s-d:hover { background: #fee2e2; }
+  .badge { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; }
+  .bg { background: #dcfce7; color: #16a34a; }
+  .br { background: #fee2e2; color: #dc2626; }
+  .bgr { background: #f3f4f6; color: #6b7280; }
+  .two-col { display: grid; grid-template-columns: 1fr 1.4fr; gap: 24px; }
+  .two-col-eq { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   .tbl-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
   th { background: #f8fafc; padding: 12px 18px; text-align: left; font-weight: 700; color: #9ca3af; font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; }
@@ -756,12 +781,17 @@ function Admin({ showToast }) {
   return (
     <div className="admin-wrap">
       <div className="admin-side">
-        <div className="side-logo"><LogoSVG size={44}/><div className="side-lbl">Admin Panel</div></div>
+        {/* Encabezado sidebar — sin logo, solo texto */}
+        <div style={{padding:"8px 20px 20px",borderBottom:"1px solid #f0f0f0",marginBottom:8}}>
+          <div style={{fontSize:15,fontWeight:800,color:"#0a2e1e",fontFamily:"'Playfair Display',Georgia,serif"}}>Javivi Admin</div>
+          <div style={{fontSize:11,color:"#9ca3af",fontWeight:600,marginTop:2,letterSpacing:"0.5px"}}>{user?.nombre}</div>
+        </div>
+        <div className="side-section-lbl">Menú</div>
         {nav.map(([k,ic,lbl])=>(
           <div key={k} className={`side-item ${tab===k?"active":""}`} onClick={()=>setTab(k)}><span>{ic}</span><span>{lbl}</span></div>
         ))}
-        <div style={{marginTop:16,borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:12}}>
-          <div className="side-item" onClick={()=>setUser(null)}><span>🚪</span><span>Cerrar sesión</span></div>
+        <div style={{marginTop:16,borderTop:"1px solid #f0f0f0",paddingTop:12}}>
+          <div className="side-item" onClick={()=>setUser(null)}><span>🚪</span><span style={{color:"#dc2626"}}>Cerrar sesión</span></div>
         </div>
       </div>
       <div className="admin-content">
