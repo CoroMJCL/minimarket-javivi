@@ -202,17 +202,23 @@ const css = `
   .oferta-card {
     background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
     border-radius: 12px; overflow: hidden; transition: all 0.2s;
+    display: flex; flex-direction: column; height: 100%;
   }
   .oferta-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); border-color: rgba(74,222,128,0.3); }
-  .oferta-img { width: 100%; aspect-ratio: 1/1; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .oferta-img img { width:100%; height:100%; object-fit:contain; padding:12px; transition: transform 0.3s; }
-  .oferta-card:hover .oferta-img img { transform: scale(1.05); }
-  .oferta-body { padding: 10px 12px 12px; }
-  .oferta-name { font-size: 12.5px; font-weight: 600; color: white; margin-bottom: 8px; line-height: 1.3; }
+  .oferta-img {
+    width: 100%; height: 180px; flex-shrink: 0;
+    background: white;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    padding: 24px;
+  }
+  .oferta-img img { width:100%; height:100%; object-fit:contain; transition: transform 0.3s; }
+  .oferta-card:hover .oferta-img img { transform: scale(1.04); }
+  .oferta-body { padding: 12px 14px 16px; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+  .oferta-name { font-size: 13px; font-weight: 600; color: white; margin-bottom: 8px; line-height: 1.3; min-height: 36px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .oferta-prices { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
   .oferta-old { font-size: 11px; color: rgba(255,255,255,0.35); text-decoration: line-through; }
-  .oferta-new { font-size: 16px; font-weight: 800; color: #4ade80; }
-  .oferta-save { margin-top: 5px; font-size: 10px; font-weight: 700; color: #4ade80; background: rgba(74,222,128,0.12); padding: 2px 7px; border-radius: 4px; display: inline-block; }
+  .oferta-new { font-size: 18px; font-weight: 800; color: #4ade80; }
+  .oferta-save { margin-top: 6px; font-size: 10px; font-weight: 700; color: #4ade80; background: rgba(74,222,128,0.12); padding: 3px 8px; border-radius: 4px; display: inline-block; }
 
   /* ── SECCIÓN ── */
   .section { padding: 80px 24px; }
@@ -438,6 +444,34 @@ function WAFloat() {
 }
 
 // ── CARRUSEL ─────────────────────────────────────────────────
+function Countdown({ horaFin }) {
+  const [timeLeft, setTimeLeft] = useState("");
+
+  useEffect(() => {
+    const calc = () => {
+      const now = new Date();
+      const [h, m] = (horaFin || "21:00").split(":").map(Number);
+      const fin = new Date();
+      fin.setHours(h, m, 0, 0);
+      if (fin <= now) fin.setDate(fin.getDate() + 1);
+      const diff = fin - now;
+      const hh = Math.floor(diff / 3600000);
+      const mm = Math.floor((diff % 3600000) / 60000);
+      const ss = Math.floor((diff % 60000) / 1000);
+      setTimeLeft(`${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}:${String(ss).padStart(2,"0")}`);
+    };
+    calc();
+    const t = setInterval(calc, 1000);
+    return () => clearInterval(t);
+  }, [horaFin]);
+
+  return (
+    <span style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(220,38,38,0.25)",border:"1px solid rgba(220,38,38,0.4)",borderRadius:6,padding:"2px 10px",fontWeight:800,letterSpacing:1,color:"#fca5a5",fontVariantNumeric:"tabular-nums"}}>
+      ⏰ {timeLeft}
+    </span>
+  );
+}
+
 function OfertasGrid({ promos }) {
   const [idx, setIdx] = useState(0);
   const timer = useRef(null);
@@ -473,9 +507,9 @@ function OfertasGrid({ promos }) {
           )}
         </div>
         <div style={{overflow:"hidden"}}>
-          <div style={{display:"flex",gap:12,transition:"transform 0.4s cubic-bezier(0.4,0,0.2,1)",transform:`translateX(calc(-${idx} * (100% / ${visible} + 3px)))`}}>
+          <div style={{display:"flex",gap:12,transition:"transform 0.4s cubic-bezier(0.4,0,0.2,1)",transform:`translateX(calc(-${idx} * (25% + 3px)))`}}>
             {promos.map(p => (
-              <div key={p.id} style={{minWidth:`calc(${100/visible}% - ${12*(visible-1)/visible}px)`,flexShrink:0}}>
+              <div key={p.id} style={{minWidth:"calc(25% - 9px)",flexShrink:0,display:"flex"}}>
                 <div className="oferta-card">
                   <div className="oferta-img">
                     {p.foto_url
@@ -1015,6 +1049,11 @@ function Admin({ showToast, onExit }) {
               <div className="form-group"><label className="form-label">Nombre del negocio</label><input className="form-input" value={config.nombre_negocio} onChange={e=>setConfig({...config,nombre_negocio:e.target.value})}/></div>
               <div className="form-group"><label className="form-label">Dirección</label><input className="form-input" placeholder="Ej: Av. Las Torres 1234, Maipú" value={config.direccion} onChange={e=>setConfig({...config,direccion:e.target.value})}/></div>
               <div className="form-group">
+                <label className="form-label">Hora de término de ofertas</label>
+                <input className="form-input" type="time" value={config.hora_fin_ofertas||"21:00"} onChange={e=>setConfig({...config,hora_fin_ofertas:e.target.value})}/>
+                <p style={{fontSize:12,color:"#aaa",marginTop:6}}>Se mostrará una cuenta regresiva en el sitio hasta esta hora</p>
+              </div>
+              <div className="form-group">
                 <label className="form-label">Teléfono WhatsApp</label>
                 <input className="form-input" placeholder="Ej: 56912345678" value={config.telefono_whatsapp} onChange={e=>setConfig({...config,telefono_whatsapp:e.target.value})}/>
                 <p style={{fontSize:12,color:"#aaa",marginTop:6}}>Formato sin + ni espacios. Ej: 56912345678</p>
@@ -1092,23 +1131,31 @@ export default function App() {
         </div>
       </nav>
 
-      {/* TICKER de promociones */}
-      {promos.length > 0 && (
-        <div className="ticker-wrap">
-          <div className="ticker-inner">
-            {[...promos,...promos].map((p,i) => (
-              <span key={i} className="ticker-item">
-                🔥 <strong>{p.nombre}</strong>
-                {p.precio_original && <span style={{textDecoration:"line-through",opacity:0.5,marginLeft:4}}>{fmtPeso(p.precio_original)}</span>}
-                <span style={{color:"#86efac"}}>{fmtPeso(p.precio_oferta)}</span>
-                <span className="ticker-sep">·</span>
+      <div style={{paddingTop:60}}>
+        {promos.length > 0 && (
+          <div className="ticker-wrap" style={{display:"flex",alignItems:"center",gap:0,overflow:"hidden"}}>
+            {/* Mensaje fijo izquierda */}
+            <div style={{flexShrink:0,padding:"0 16px",display:"flex",alignItems:"center",gap:10,borderRight:"1px solid rgba(74,222,128,0.2)",whiteSpace:"nowrap"}}>
+              <span style={{fontSize:12,fontWeight:600,color:"rgba(255,255,255,0.7)"}}>
+                Ofertas de hoy terminan a las {siteConfig.hora_fin_ofertas || "21:00"} hrs
               </span>
-            ))}
+              <Countdown horaFin={siteConfig.hora_fin_ofertas || "21:00"}/>
+            </div>
+            {/* Ticker deslizante */}
+            <div style={{flex:1,overflow:"hidden"}}>
+              <div className="ticker-inner">
+                {[...promos,...promos].map((p,i) => (
+                  <span key={i} className="ticker-item">
+                    🔥 <strong>{p.nombre}</strong>
+                    {p.precio_original && <span style={{textDecoration:"line-through",opacity:0.5,marginLeft:4}}>{fmtPeso(p.precio_original)}</span>}
+                    <span style={{color:"#86efac",marginLeft:4}}>{fmtPeso(p.precio_oferta)}</span>
+                    <span className="ticker-sep">·</span>
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      )}
-
-      <div style={{paddingTop: promos.length > 0 ? 92 : 60}}>
+        )}
         <Landing productos={productos} categorias={categorias} promos={promos} wa={wa} direccion={siteConfig.direccion}/>
         <footer>
           <div>
