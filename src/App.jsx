@@ -772,8 +772,13 @@ function Admin({ showToast, onExit }) {
   };
 
   if (!user) return (
-    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#fafaf9",paddingTop:60}}>
-      <div style={{background:"#fff",borderRadius:16,padding:40,width:"100%",maxWidth:320,border:"1px solid #e8e8e8",boxShadow:"0 8px 32px rgba(0,0,0,0.06)"}}>
+    <div style={{
+      minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center",
+      paddingTop:60, position:"relative", overflow:"hidden",
+    }}>
+      <div style={{position:"absolute",inset:0,backgroundImage:"url('https://mzpdgiefwnvviyvslbff.supabase.co/storage/v1/object/public/productos/hero-bg.jpg')",backgroundSize:"cover",backgroundPosition:"center"}}/>
+      <div style={{position:"absolute",inset:0,background:"rgba(255,255,255,0.82)"}}/>
+      <div style={{position:"relative",zIndex:1,background:"rgba(255,255,255,0.95)",borderRadius:16,padding:40,width:"100%",maxWidth:320,border:"1px solid #e8e8e8",boxShadow:"0 8px 40px rgba(0,0,0,0.1)"}}>
         <div style={{textAlign:"center",marginBottom:28}}>
           <div style={{fontSize:36,marginBottom:10}}>🔐</div>
           <div style={{fontSize:18,fontWeight:700,color:"#0a0a0a"}}>Módulo de administración</div>
