@@ -847,12 +847,25 @@ function Admin({ showToast }) {
   const saveProd = async () => {
     if (!prodForm.nombre.trim()) { showToast("El nombre es obligatorio"); return; }
     setSaving(true);
-    let foto_url = prodForm.foto_url||null;
-    if (prodFile) foto_url = await uploadFoto(prodFile,"productos");
-    const d = {...prodForm, foto_url, puntos_requeridos:parseInt(prodForm.puntos_requeridos)||0};
-    delete d.categorias;
-    if (prodForm.id) await supabaseAdmin.from("productos").update(d).eq("id",prodForm.id);
-    else await supabaseAdmin.from("productos").insert(d);
+    let foto_url = prodForm.foto_url || null;
+    if (prodFile) {
+      const url = await uploadFoto(prodFile, "productos");
+      if (url) foto_url = url;
+      else { setSaving(false); return; }
+    }
+    const d = {
+      nombre: prodForm.nombre,
+      descripcion: prodForm.descripcion || null,
+      foto_url,
+      puntos_requeridos: parseInt(prodForm.puntos_requeridos) || 0,
+      categoria_id: prodForm.categoria_id || null,
+      activo: prodForm.activo,
+      destacado: prodForm.destacado,
+    };
+    const { error } = prodForm.id
+      ? await supabaseAdmin.from("productos").update(d).eq("id", prodForm.id)
+      : await supabaseAdmin.from("productos").insert(d);
+    if (error) { showToast(`Error: ${error.message}`); setSaving(false); return; }
     showToast("Producto guardado ✅");
     setProdForm({nombre:"",descripcion:"",puntos_requeridos:0,categoria_id:"",activo:true,destacado:false});
     setProdFile(null); load(); setSaving(false);
@@ -861,11 +874,24 @@ function Admin({ showToast }) {
   const savePromo = async () => {
     if (!promoForm.nombre.trim()||!promoForm.precio_oferta) { showToast("Nombre y precio son obligatorios"); return; }
     setSaving(true);
-    let foto_url = promoForm.foto_url||null;
-    if (promoFile) foto_url = await uploadFoto(promoFile,"promociones");
-    const d = {...promoForm, foto_url, precio_oferta:parseFloat(promoForm.precio_oferta)||0, precio_original:parseFloat(promoForm.precio_original)||null};
-    if (promoForm.id) await supabaseAdmin.from("promociones").update(d).eq("id",promoForm.id);
-    else await supabaseAdmin.from("promociones").insert(d);
+    let foto_url = promoForm.foto_url || null;
+    if (promoFile) {
+      const url = await uploadFoto(promoFile, "promociones");
+      if (url) foto_url = url;
+      else { showToast("Error al subir la foto"); setSaving(false); return; }
+    }
+    const d = {
+      nombre: promoForm.nombre,
+      descripcion: promoForm.descripcion || null,
+      foto_url,
+      precio_oferta: parseFloat(promoForm.precio_oferta) || 0,
+      precio_original: parseFloat(promoForm.precio_original) || null,
+      activo: promoForm.activo,
+    };
+    const { error } = promoForm.id
+      ? await supabaseAdmin.from("promociones").update(d).eq("id", promoForm.id)
+      : await supabaseAdmin.from("promociones").insert(d);
+    if (error) { showToast(`Error: ${error.message}`); setSaving(false); return; }
     showToast("Promoción guardada ✅");
     setPromoForm({nombre:"",descripcion:"",precio_original:"",precio_oferta:"",activo:true});
     setPromoFile(null); load(); setSaving(false);
@@ -1032,7 +1058,15 @@ function Admin({ showToast }) {
                 {promoForm.id&&<button className="btn-s btn-s-d" onClick={()=>setPromoForm({nombre:"",descripcion:"",precio_original:"",precio_oferta:"",activo:true})}>Cancelar</button>}
               </div>
               <div className="panel-bd">
-                <div className="form-group"><label className="form-label">Foto</label><input type="file" accept="image/*" className="form-input" style={{padding:"8px"}} onChange={e=>setPromoFile(e.target.files[0])}/></div>
+                <div className="form-group"><label className="form-label">Foto</label>
+                  <input type="file" accept="image/*" className="form-input" style={{padding:"8px"}} onChange={e=>setPromoFile(e.target.files[0])}/>
+                  {promoForm.foto_url && !promoFile && (
+                    <div style={{marginTop:8,position:"relative",display:"inline-block"}}>
+                      <img src={promoForm.foto_url} alt="" style={{width:80,height:80,objectFit:"contain",borderRadius:8,border:"1px solid #e5e7eb",background:"#f9fafb",padding:4}}/>
+                      <div style={{fontSize:11,color:"#9ca3af",marginTop:4}}>Foto actual</div>
+                    </div>
+                  )}
+                </div>
                 <div className="form-group"><label className="form-label">Nombre *</label><input className="form-input" value={promoForm.nombre} onChange={e=>setPromoForm({...promoForm,nombre:e.target.value})}/></div>
                 <div className="form-group"><label className="form-label">Descripción</label><textarea className="form-textarea" style={{minHeight:72}} value={promoForm.descripcion} onChange={e=>setPromoForm({...promoForm,descripcion:e.target.value})}/></div>
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
@@ -1055,7 +1089,11 @@ function Admin({ showToast }) {
                         <td><span style={{fontWeight:800,color:"#dc2626"}}>{fmtPeso(p.precio_oferta)}</span></td>
                         <td><span className={`badge ${p.activo?"bg":"bgr"}`}>{p.activo?"Activa":"Inactiva"}</span></td>
                         <td><div style={{display:"flex",gap:6}}>
-                          <button className="btn-s btn-s-p" onClick={()=>setPromoForm({...p})}>Editar</button>
+                          <button className="btn-s btn-s-p" onClick={()=>setPromoForm({
+                            ...p,
+                            precio_original: p.precio_original || "",
+                            precio_oferta: p.precio_oferta || "",
+                          })}>Editar</button>
                           <button className="btn-s btn-s-d" onClick={async()=>{await supabaseAdmin.from("promociones").delete().eq("id",p.id);showToast("Eliminada");load();}}>✕</button>
                         </div></td>
                       </tr>
