@@ -118,7 +118,22 @@ const css = `
   }
   .tooltip::before { content:''; position:absolute; bottom:100%; right:10px; border:5px solid transparent; border-bottom-color:#1a1a1a; }
 
-  /* ── HERO ── */
+  /* ── TICKER ── */
+  .ticker-wrap {
+    background: #0a2e1e; color: #4ade80;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+    overflow: hidden; white-space: nowrap; height: 32px;
+    display: flex; align-items: center;
+    border-bottom: 1px solid rgba(74,222,128,0.15);
+  }
+  .ticker-inner {
+    display: inline-flex; gap: 0;
+    animation: ticker 20s linear infinite;
+  }
+  .ticker-inner:hover { animation-play-state: paused; }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .ticker-item { padding: 0 32px; display: inline-flex; align-items: center; gap: 8px; }
+  .ticker-sep { color: rgba(74,222,128,0.3); }
   .hero {
     padding: 140px 24px 100px;
     text-align: center;
@@ -128,14 +143,14 @@ const css = `
   }
   .hero-bg {
     position: absolute; inset: 0; z-index: 0;
-    background-image: url('/minimarket-bg.jpg');
+    background-image: url('https://mzpdgiefwnvviyvslbff.supabase.co/storage/v1/object/public/productos/hero-bg.jpg');
     background-size: cover; background-position: center;
-    opacity: 0.18;
-    filter: saturate(0.6);
+    opacity: 0.35;
+    filter: saturate(0.7);
   }
   .hero-overlay {
     position: absolute; inset: 0; z-index: 1;
-    background: linear-gradient(180deg, rgba(10,46,30,0.7) 0%, rgba(10,46,30,0.85) 100%);
+    background: linear-gradient(180deg, rgba(10,46,30,0.55) 0%, rgba(10,46,30,0.75) 100%);
   }
   .hero-content { position: relative; z-index: 2; }
   .hero-eyebrow {
@@ -178,59 +193,48 @@ const css = `
   .hero-stat-num { font-size: 24px; font-weight: 700; color: #4ade80; letter-spacing: -0.5px; }
   .hero-stat-lbl { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 500; margin-top: 2px; }
 
-  /* ── CARRUSEL ── */
   .carrusel-wrap { position: relative; overflow: hidden; background: #0a2e1e; }
   .carrusel-inner { display: flex; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
   .carrusel-slide {
     min-width: 100%; display: flex; align-items: center;
-    padding: 28px 64px; gap: 40px; min-height: 160px; position: relative;
+    padding: 16px 56px 20px 24px; gap: 20px; min-height: 100px; position: relative;
   }
-  .carrusel-slide::after {
-    content:''; position:absolute; inset:0;
-    background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, transparent 60%);
-  }
+  .carrusel-slide::after { content:''; position:absolute; inset:0; background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, transparent 60%); }
   .carrusel-img {
-    width: 112px; height: 112px; border-radius: 14px; flex-shrink: 0;
+    width: 80px; height: 80px; border-radius: 10px; flex-shrink: 0;
     background: rgba(255,255,255,0.08); overflow: hidden;
     display: flex; align-items: center; justify-content: center;
     border: 1px solid rgba(255,255,255,0.1);
   }
-  .carrusel-img img { width:100%; height:100%; object-fit:contain; padding:10px; }
+  .carrusel-img img { width:100%; height:100%; object-fit:contain; padding:8px; }
   .carrusel-body { flex: 1; }
-  .carrusel-tag { font-size: 10px; font-weight: 700; color: #4ade80; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
-  .carrusel-name { font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 700; color: white; margin-bottom: 10px; line-height: 1.2; }
-  .carrusel-prices { display: flex; align-items: center; gap: 14px; }
-  .carrusel-old { font-size: 14px; color: rgba(255,255,255,0.4); text-decoration: line-through; }
-  .carrusel-new { font-size: 1.5rem; font-weight: 800; color: #4ade80; }
-  .carrusel-wa {
-    display: inline-flex; align-items: center; gap: 7px;
-    background: #25d366; color: white; padding: 9px 18px;
-    border-radius: 9px; font-size: 13px; font-weight: 600;
-    transition: all 0.2s; border: none; cursor: pointer; margin-left: 20px;
-  }
-  .carrusel-wa:hover { background: #1fba58; transform: translateY(-1px); }
+  .carrusel-tag { font-size: 10px; font-weight: 700; color: #4ade80; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .carrusel-name { font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 6px; line-height: 1.2; }
+  .carrusel-prices { display: flex; align-items: center; gap: 12px; }
+  .carrusel-old { font-size: 13px; color: rgba(255,255,255,0.4); text-decoration: line-through; }
+  .carrusel-new { font-size: 1.3rem; font-weight: 800; color: #4ade80; }
   .carrusel-save {
     flex-shrink: 0; background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
-    padding: 14px 20px; text-align: center; min-width: 130px;
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+    padding: 10px 16px; text-align: center; min-width: 120px;
   }
-  .carrusel-save-lbl { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
-  .carrusel-save-num { font-size: 1.1rem; font-weight: 800; color: white; }
-  .carrusel-save-price { font-size: 1.2rem; font-weight: 800; color: #4ade80; margin: 2px 0; }
-  .carrusel-save-badge { background: rgba(74,222,128,0.15); color: #4ade80; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-top: 4px; }
+  .carrusel-save-lbl { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .carrusel-save-num { font-size: 1rem; font-weight: 700; color: white; }
+  .carrusel-save-price { font-size: 1.1rem; font-weight: 800; color: #4ade80; margin: 1px 0; }
+  .carrusel-save-badge { background: rgba(74,222,128,0.15); color: #4ade80; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px; display: inline-block; margin-top: 3px; }
   .carr-btn {
     position: absolute; top: 50%; transform: translateY(-50%);
-    width: 32px; height: 32px; border-radius: 50%;
+    width: 28px; height: 28px; border-radius: 50%;
     background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
-    color: white; font-size: 14px; cursor: pointer; z-index: 10;
+    color: white; font-size: 13px; cursor: pointer; z-index: 10;
     display: flex; align-items: center; justify-content: center; transition: all 0.2s;
   }
   .carr-btn:hover { background: rgba(255,255,255,0.2); }
-  .carr-btn-l { left: 16px; }
-  .carr-btn-r { right: 16px; }
-  .carr-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
-  .carr-dot { width: 5px; height: 5px; border-radius: 100px; background: rgba(255,255,255,0.3); transition: all 0.3s; cursor: pointer; }
-  .carr-dot.on { background: white; width: 16px; }
+  .carr-btn-l { left: 8px; }
+  .carr-btn-r { right: 8px; }
+  .carr-dots { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
+  .carr-dot { width: 4px; height: 4px; border-radius: 100px; background: rgba(255,255,255,0.3); transition: all 0.3s; cursor: pointer; }
+  .carr-dot.on { background: white; width: 14px; }
 
   /* ── SECCIÓN ── */
   .section { padding: 80px 24px; }
@@ -704,6 +708,7 @@ function Admin({ showToast, onExit }) {
   const [catForm, setCatForm] = useState({ nombre:"", icono:"🎁" });
   const [prodFile, setProdFile] = useState(null);
   const [promoFile, setPromoFile] = useState(null);
+  const [fileKey, setFileKey] = useState(0);
   const [saving, setSaving] = useState(false);
 
   const [config, setConfig] = useState({ nombre_negocio:"Minimarket Javivi", direccion:"", telefono_whatsapp:"56912345678" });
@@ -757,7 +762,11 @@ function Admin({ showToast, onExit }) {
     const d = { nombre:promoForm.nombre, descripcion:promoForm.descripcion||null, foto_url, precio_oferta:parseFloat(promoForm.precio_oferta)||0, precio_original:parseFloat(promoForm.precio_original)||null, activo:promoForm.activo };
     const {error} = promoForm.id ? await supabaseAdmin.from("promociones").update(d).eq("id",promoForm.id) : await supabaseAdmin.from("promociones").insert(d);
     if (error) { showToast(`Error: ${error.message}`); setSaving(false); return; }
-    showToast("Promoción guardada"); setPromoForm({nombre:"",descripcion:"",precio_original:"",precio_oferta:"",activo:true}); setPromoFile(null); load(); setSaving(false);
+    showToast("Promoción guardada");
+    setPromoForm({nombre:"",descripcion:"",precio_original:"",precio_oferta:"",activo:true,foto_url:null});
+    setPromoFile(null);
+    setFileKey(k => k + 1);
+    load(); setSaving(false);
   };
 
   if (!user) return (
@@ -920,7 +929,7 @@ function Admin({ showToast, onExit }) {
               <div className="panel-bd">
                 <div className="form-group">
                   <label className="form-label">Foto del producto</label>
-                  <input type="file" accept="image/*" className="form-input" style={{padding:"7px"}} onChange={e=>setPromoFile(e.target.files[0])}/>
+                  <input key={fileKey} type="file" accept="image/*" className="form-input" style={{padding:"7px"}} onChange={e=>setPromoFile(e.target.files[0])}/>
                   {promoForm.foto_url && !promoFile && <img src={promoForm.foto_url} alt="" style={{width:72,height:72,objectFit:"contain",borderRadius:8,border:"1px solid #e8e8e8",padding:4,marginTop:8,display:"block",background:"#f5f5f5"}}/>}
                 </div>
                 <div className="form-group"><label className="form-label">Nombre *</label><input className="form-input" value={promoForm.nombre} onChange={e=>setPromoForm({...promoForm,nombre:e.target.value})}/></div>
@@ -1076,7 +1085,23 @@ export default function App() {
         </div>
       </nav>
 
-      <div style={{paddingTop:60}}>
+      {/* TICKER de promociones */}
+      {promos.length > 0 && (
+        <div className="ticker-wrap">
+          <div className="ticker-inner">
+            {[...promos,...promos].map((p,i) => (
+              <span key={i} className="ticker-item">
+                🔥 <strong>{p.nombre}</strong>
+                {p.precio_original && <span style={{textDecoration:"line-through",opacity:0.5,marginLeft:4}}>{fmtPeso(p.precio_original)}</span>}
+                <span style={{color:"#86efac"}}>{fmtPeso(p.precio_oferta)}</span>
+                <span className="ticker-sep">·</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{paddingTop: promos.length > 0 ? 92 : 60}}>
         <Landing productos={productos} categorias={categorias} promos={promos} wa={wa} direccion={siteConfig.direccion}/>
         <footer>
           <div>
