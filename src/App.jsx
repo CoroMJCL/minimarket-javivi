@@ -122,42 +122,61 @@ const css = `
   .hero {
     padding: 140px 24px 100px;
     text-align: center;
-    background: #fff;
-    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+    overflow: hidden;
+    background: #0a2e1e;
   }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background-image: url('/minimarket-bg.jpg');
+    background-size: cover; background-position: center;
+    opacity: 0.18;
+    filter: saturate(0.6);
+  }
+  .hero-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(180deg, rgba(10,46,30,0.7) 0%, rgba(10,46,30,0.85) 100%);
+  }
+  .hero-content { position: relative; z-index: 2; }
   .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12px; font-weight: 600; color: #16a34a;
+    font-size: 12px; font-weight: 600; color: #4ade80;
     letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px;
   }
-  .hero-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: #16a34a; }
+  .hero-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; }
   .hero h1 {
     font-size: clamp(2.8rem, 5vw, 4.5rem);
-    font-weight: 700; color: #0a0a0a; line-height: 1.05;
+    font-weight: 700; color: #ffffff; line-height: 1.05;
     letter-spacing: -2px; max-width: 700px; margin: 0 auto 18px;
   }
-  .hero h1 span { color: #16a34a; }
+  .hero h1 span { color: #4ade80; }
   .hero-sub {
-    font-size: 17px; color: #6b6b6b; max-width: 440px;
+    font-size: 17px; color: rgba(255,255,255,0.65); max-width: 440px;
     margin: 0 auto 40px; line-height: 1.6; font-weight: 400;
   }
   .hero-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 64px; }
   .btn-primary {
-    padding: 12px 24px; background: #0a2e1e; color: white;
-    border-radius: 10px; font-size: 14px; font-weight: 600;
+    padding: 12px 24px; background: #4ade80; color: #0a2e1e;
+    border-radius: 10px; font-size: 14px; font-weight: 700;
     transition: all 0.2s; display: inline-flex; align-items: center; gap: 7px;
   }
-  .btn-primary:hover { background: #16a34a; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(10,46,30,0.25); }
+  .btn-primary:hover { background: #22c55e; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(74,222,128,0.35); }
   .btn-secondary {
-    padding: 12px 24px; background: #f5f5f5; color: #1a1a1a;
-    border-radius: 10px; font-size: 14px; font-weight: 600; transition: all 0.2s;
+    padding: 12px 24px; background: rgba(255,255,255,0.1); color: white;
+    border-radius: 10px; font-size: 14px; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;
   }
-  .btn-secondary:hover { background: #ebebeb; }
-  .hero-stats { display: flex; gap: 0; justify-content: center; border: 1px solid #e5e5e5; border-radius: 14px; overflow: hidden; max-width: 480px; margin: 0 auto; }
-  .hero-stat { flex: 1; padding: 18px 24px; text-align: center; border-right: 1px solid #e5e5e5; }
+  .btn-secondary:hover { background: rgba(255,255,255,0.18); }
+  .hero-stats {
+    display: flex; gap: 0; justify-content: center;
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 14px;
+    overflow: hidden; max-width: 480px; margin: 0 auto;
+    background: rgba(255,255,255,0.06); backdrop-filter: blur(10px);
+  }
+  .hero-stat { flex: 1; padding: 18px 24px; text-align: center; border-right: 1px solid rgba(255,255,255,0.1); }
   .hero-stat:last-child { border-right: none; }
-  .hero-stat-num { font-size: 24px; font-weight: 700; color: #0a2e1e; letter-spacing: -0.5px; }
-  .hero-stat-lbl { font-size: 11px; color: #999; font-weight: 500; margin-top: 2px; letter-spacing: 0.3px; }
+  .hero-stat-num { font-size: 24px; font-weight: 700; color: #4ade80; letter-spacing: -0.5px; }
+  .hero-stat-lbl { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 500; margin-top: 2px; }
 
   /* ── CARRUSEL ── */
   .carrusel-wrap { position: relative; overflow: hidden; background: #0a2e1e; }
@@ -516,17 +535,21 @@ function Landing({ productos, categorias, promos, wa, direccion }) {
     <>
       {/* HERO */}
       <section className="hero">
-        <div className="hero-eyebrow"><div className="hero-eyebrow-dot"/>Sistema de puntos</div>
-        <h1>Cada compra<br/>tiene su <span>recompensa</span></h1>
-        <p className="hero-sub">Acumula puntos comprando en Minimarket Javivi y canjéalos por productos directamente en tienda.</p>
-        <div className="hero-actions">
-          <button className="btn-primary" onClick={() => catalogRef.current?.scrollIntoView({behavior:"smooth"})}>Ver catálogo</button>
-          <button className="btn-secondary" onClick={() => contactRef.current?.scrollIntoView({behavior:"smooth"})}>Contacto</button>
-        </div>
-        <div className="hero-stats">
-          <div className="hero-stat"><div className="hero-stat-num">{productos.length}</div><div className="hero-stat-lbl">Productos</div></div>
-          <div className="hero-stat"><div className="hero-stat-num">{categorias.length}</div><div className="hero-stat-lbl">Categorías</div></div>
-          <div className="hero-stat"><div className="hero-stat-num">$0</div><div className="hero-stat-lbl">Costo canje</div></div>
+        <div className="hero-bg"/>
+        <div className="hero-overlay"/>
+        <div className="hero-content">
+          <div className="hero-eyebrow"><div className="hero-eyebrow-dot"/>Sistema de puntos</div>
+          <h1>Cada compra<br/>tiene su <span>recompensa</span></h1>
+          <p className="hero-sub">Acumula puntos comprando en Minimarket Javivi y canjéalos por productos directamente en tienda.</p>
+          <div className="hero-actions">
+            <button className="btn-primary" onClick={() => catalogRef.current?.scrollIntoView({behavior:"smooth"})}>Ver catálogo</button>
+            <button className="btn-secondary" onClick={() => contactRef.current?.scrollIntoView({behavior:"smooth"})}>Contacto</button>
+          </div>
+          <div className="hero-stats">
+            <div className="hero-stat"><div className="hero-stat-num">{productos.length}</div><div className="hero-stat-lbl">Productos</div></div>
+            <div className="hero-stat"><div className="hero-stat-num">{categorias.length}</div><div className="hero-stat-lbl">Categorías</div></div>
+            <div className="hero-stat"><div className="hero-stat-num">$0</div><div className="hero-stat-lbl">Costo canje</div></div>
+          </div>
         </div>
       </section>
 
