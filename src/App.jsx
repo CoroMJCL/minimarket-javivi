@@ -1018,6 +1018,8 @@ function Admin({ showToast, onExit }) {
     </div>
   );
 }
+
+export default function App() {
   const [view, setView] = useState("landing");
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
