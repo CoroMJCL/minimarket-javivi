@@ -202,105 +202,86 @@ const css = `
   /* CARRUSEL PROMOCIONES */
   .carrusel-wrap {
     position: relative; overflow: hidden;
-    background: linear-gradient(135deg, #15803d 0%, #16a34a 40%, #22c55e 100%);
-    margin: 0;
+    background: linear-gradient(135deg, #166534 0%, #16a34a 50%, #22c55e 100%);
   }
-  .carrusel-inner {
-    display: flex; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
-  }
+  .carrusel-inner { display: flex; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
   .carrusel-slide {
     min-width: 100%; display: flex; align-items: center;
-    padding: 40px 60px; gap: 48px; position: relative; overflow: hidden;
-    min-height: 220px;
+    padding: 24px 80px 24px 48px; gap: 32px; position: relative;
+    min-height: 140px;
   }
   .carrusel-slide::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(circle at 80% 50%, rgba(255,255,255,0.08) 0%, transparent 60%);
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 85% 50%, rgba(255,255,255,0.06) 0%, transparent 55%);
   }
   .carrusel-img-wrap {
-    flex-shrink: 0; width: 160px; height: 160px;
-    background: rgba(255,255,255,0.15); border-radius: 20px;
-    display: flex; align-items: center; justify-content: center;
-    backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.25);
-    overflow: hidden; position: relative; z-index: 1;
+    flex-shrink:0; width:100px; height:100px;
+    background:rgba(255,255,255,0.15); border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid rgba(255,255,255,0.25); overflow:hidden; position:relative; z-index:1;
   }
-  .carrusel-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 12px; }
-  .carrusel-img-placeholder { font-size: 64px; }
-  .carrusel-content { flex: 1; position: relative; z-index: 1; }
+  .carrusel-img-wrap img { width:100%; height:100%; object-fit:contain; padding:8px; }
+  .carrusel-content { flex:1; position:relative; z-index:1; }
   .carrusel-tag {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(255,255,255,0.2); color: white;
-    padding: 4px 14px; border-radius: 100px; font-size: 11px;
-    font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
-    margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.3);
+    display:inline-flex; align-items:center; gap:5px;
+    background:rgba(0,0,0,0.15); color:white;
+    padding:3px 12px; border-radius:100px; font-size:10px;
+    font-weight:800; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;
   }
   .carrusel-name {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 900; color: white;
-    line-height: 1.15; margin-bottom: 12px;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; color:white;
+    line-height:1.15; margin-bottom:8px;
   }
-  .carrusel-desc { font-size: 14px; color: rgba(255,255,255,0.8); margin-bottom: 16px; line-height: 1.5; max-width: 420px; }
-  .carrusel-prices { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-  .carrusel-price-old { font-size: 16px; color: rgba(255,255,255,0.55); text-decoration: line-through; }
+  .carrusel-prices { display:flex; align-items:center; gap:14px; }
+  .carrusel-price-old { font-size:14px; color:rgba(255,255,255,0.55); text-decoration:line-through; }
   .carrusel-price-new {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 2.2rem; font-weight: 900; color: white;
-    background: rgba(0,0,0,0.15); padding: 4px 20px; border-radius: 12px;
-    border: 2px solid rgba(255,255,255,0.3);
+    font-family:'Playfair Display',Georgia,serif;
+    font-size:1.6rem; font-weight:900; color:white;
+    background:rgba(0,0,0,0.18); padding:3px 16px; border-radius:8px;
+    border:1.5px solid rgba(255,255,255,0.25);
   }
   .carrusel-cta {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: white; color: #15803d; padding: 12px 24px;
-    border-radius: 12px; font-size: 14px; font-weight: 800;
-    transition: all 0.2s; cursor: pointer; border: none;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    display:inline-flex; align-items:center; gap:6px;
+    background:white; color:#15803d; padding:9px 18px;
+    border-radius:10px; font-size:13px; font-weight:800;
+    transition:all 0.2s; cursor:pointer; border:none;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15); margin-left:20px; white-space:nowrap;
   }
-  .carrusel-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-
-  /* Decoración derecha */
+  .carrusel-cta:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,0.2); }
   .carrusel-deco {
-    position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
-    width: 200px; text-align: right; z-index: 1;
+    flex-shrink:0; position:relative; z-index:1;
   }
-  .carrusel-deco-equiv {
-    background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 16px; padding: 16px 20px; color: white; text-align: center;
-    backdrop-filter: blur(8px);
+  .carrusel-deco-box {
+    background:rgba(0,0,0,0.15); border:1.5px solid rgba(255,255,255,0.25);
+    border-radius:14px; padding:12px 18px; color:white; text-align:center;
+    min-width:140px;
   }
-  .carrusel-deco-equiv .num { font-family: 'Playfair Display', Georgia, serif; font-size: 1.6rem; font-weight: 900; }
-  .carrusel-deco-equiv .sep { font-size: 18px; margin: 4px 0; opacity: 0.7; }
-  .carrusel-deco-equiv .price { font-size: 1.4rem; font-weight: 900; color: #bbf7d0; }
-
-  /* Controles carrusel */
+  .carrusel-deco-box .lbl { font-size:9px; font-weight:800; color:rgba(255,255,255,0.6); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
+  .carrusel-deco-box .num { font-family:'Playfair Display',Georgia,serif; font-size:1.2rem; font-weight:900; }
+  .carrusel-deco-box .sep { font-size:14px; opacity:0.6; margin:2px 0; }
+  .carrusel-deco-box .price { font-size:1.3rem; font-weight:900; color:#bbf7d0; }
+  .carrusel-deco-box .save { margin-top:6px; background:rgba(0,0,0,0.2); border-radius:6px; padding:3px 8px; font-size:11px; color:#bbf7d0; font-weight:800; }
   .carrusel-btn {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    width: 44px; height: 44px; border-radius: 50%;
-    background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4);
-    color: white; font-size: 18px; cursor: pointer; z-index: 10;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s; backdrop-filter: blur(4px);
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:36px; height:36px; border-radius:50%;
+    background:rgba(255,255,255,0.15); border:1.5px solid rgba(255,255,255,0.3);
+    color:white; font-size:16px; cursor:pointer; z-index:10;
+    display:flex; align-items:center; justify-content:center; transition:all 0.2s;
   }
-  .carrusel-btn:hover { background: rgba(255,255,255,0.35); transform: translateY(-50%) scale(1.05); }
-  .carrusel-btn-prev { left: 16px; }
-  .carrusel-btn-next { right: 16px; }
-
-  /* Dots */
-  .carrusel-dots {
-    position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 6px; z-index: 10;
-  }
-  .carrusel-dot {
-    width: 8px; height: 8px; border-radius: 100px;
-    background: rgba(255,255,255,0.4); transition: all 0.3s; cursor: pointer;
-  }
-  .carrusel-dot.active { background: white; width: 24px; }
-
-  @media (max-width: 768px) {
-    .carrusel-slide { flex-direction: column; padding: 28px 24px; gap: 20px; min-height: auto; }
-    .carrusel-img-wrap { width: 120px; height: 120px; }
-    .carrusel-deco { display: none; }
-    .carrusel-price-new { font-size: 1.6rem; }
+  .carrusel-btn:hover { background:rgba(255,255,255,0.28); }
+  .carrusel-btn-prev { left:12px; }
+  .carrusel-btn-next { right:12px; }
+  .carrusel-dots { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:10; }
+  .carrusel-dot { width:6px; height:6px; border-radius:100px; background:rgba(255,255,255,0.35); transition:all 0.3s; cursor:pointer; }
+  .carrusel-dot.active { background:white; width:18px; }
+  .carrusel-counter { position:absolute; top:10px; right:16px; font-size:11px; color:rgba(255,255,255,0.4); font-weight:700; z-index:1; }
+  @media(max-width:768px){
+    .carrusel-slide { padding:16px 48px 24px 20px; gap:16px; min-height:auto; }
+    .carrusel-img-wrap { width:72px; height:72px; }
+    .carrusel-deco { display:none; }
+    .carrusel-cta { display:none; }
+    .carrusel-price-new { font-size:1.2rem; }
   }
 
   /* CATALOGO */
@@ -323,16 +304,16 @@ const css = `
     margin-bottom: 32px;
   }
   .cat-tab {
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 20px; border-radius: 100px;
-    font-size: 13.5px; font-weight: 600; cursor: pointer;
-    transition: all 0.2s; border: 2px solid #e5e7eb;
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 100px;
+    font-size: 12.5px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; border: 1.5px solid #e5e7eb;
     background: white; color: #6b7280; white-space: nowrap;
   }
   .cat-tab:hover { border-color: #0a2e1e; color: #0a2e1e; }
-  .cat-tab.active { background: #0a2e1e; color: white; border-color: #0a2e1e; box-shadow: 0 4px 14px rgba(10,46,30,0.2); }
-  .cat-tab-icon { font-size: 16px; }
-  .cat-tab-count { font-size: 11px; opacity: 0.6; margin-left: 2px; }
+  .cat-tab.active { background: #0a2e1e; color: white; border-color: #0a2e1e; box-shadow: 0 3px 10px rgba(10,46,30,0.2); }
+  .cat-tab-icon { font-size: 14px; }
+  .cat-tab-count { font-size: 10px; opacity: 0.55; }
 
   /* Grid productos estilo tienda */
   .products-grid {
@@ -557,73 +538,65 @@ function WAFloat() {
 function PromoCarrusel({ promos, waNumber }) {
   const [idx, setIdx] = useState(0);
   const timerRef = useRef(null);
-
-  const goTo = (i) => {
-    setIdx((i + promos.length) % promos.length);
-  };
-
+  const goTo = (i) => setIdx((i + promos.length) % promos.length);
+  const reset = (fn) => { clearInterval(timerRef.current); fn(); timerRef.current = setInterval(()=>setIdx(p=>(p+1)%promos.length), 5000); };
   useEffect(() => {
-    timerRef.current = setInterval(() => setIdx(p => (p + 1) % promos.length), 5000);
+    timerRef.current = setInterval(()=>setIdx(p=>(p+1)%promos.length), 5000);
     return () => clearInterval(timerRef.current);
   }, [promos.length]);
 
-  const reset = (fn) => { clearInterval(timerRef.current); fn(); timerRef.current = setInterval(() => setIdx(p => (p + 1) % promos.length), 5000); };
-
   return (
     <div className="carrusel-wrap">
-      <div className="carrusel-inner" style={{ transform: `translateX(-${idx * 100}%)` }}>
-        {promos.map((p, i) => (
+      <div className="carrusel-inner" style={{transform:`translateX(-${idx*100}%)`}}>
+        {promos.map((p,i)=>(
           <div className="carrusel-slide" key={p.id}>
-            {/* Imagen */}
+            {/* Foto */}
             <div className="carrusel-img-wrap">
-              {p.foto_url ? <img src={p.foto_url} alt={p.nombre}/> : <div className="carrusel-img-placeholder">🔥</div>}
+              {p.foto_url
+                ? <img src={p.foto_url} alt={p.nombre} onError={e=>{e.target.style.display="none"; e.target.nextSibling.style.display="flex";}}/>
+                : null
+              }
+              <div style={{display: p.foto_url ? "none" : "flex", alignItems:"center", justifyContent:"center", width:"100%", height:"100%", fontSize:36}}>🔥</div>
             </div>
 
-            {/* Contenido */}
+            {/* Info */}
             <div className="carrusel-content">
               <div className="carrusel-tag">🔥 Oferta especial</div>
               <div className="carrusel-name">{p.nombre}</div>
-              {p.descripcion && <div className="carrusel-desc">{p.descripcion}</div>}
-              <div className="carrusel-prices">
-                {p.precio_original && <span className="carrusel-price-old">{fmtPeso(p.precio_original)}</span>}
-                <span className="carrusel-price-new">{fmtPeso(p.precio_oferta)}</span>
-              </div>
-              <a href={`https://wa.me/${waNumber}?text=Hola%2C%20me%20interesa%20la%20oferta%20de%20${encodeURIComponent(p.nombre)}`}
-                target="_blank" rel="noreferrer">
-                <button className="carrusel-cta">💬 Consultar por WhatsApp →</button>
-              </a>
-            </div>
-
-            {/* Deco derecha */}
-            <div className="carrusel-deco">
-              <div className="carrusel-deco-equiv">
-                <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.7)",letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>Ahorra con tu descuento</div>
-                <div className="num">{fmtPeso(p.precio_original || p.precio_oferta)}</div>
-                <div className="sep">↓</div>
-                <div className="price">{fmtPeso(p.precio_oferta)}</div>
-                {p.precio_original && (
-                  <div style={{marginTop:8,background:"rgba(0,0,0,0.15)",borderRadius:8,padding:"4px 10px",fontSize:12,color:"#bbf7d0",fontWeight:700}}>
-                    Ahorra {fmtPeso(p.precio_original - p.precio_oferta)}
-                  </div>
-                )}
+              <div style={{display:"flex",alignItems:"center",gap:16,flexWrap:"wrap"}}>
+                <div className="carrusel-prices">
+                  {p.precio_original && <span className="carrusel-price-old">{fmtPeso(p.precio_original)}</span>}
+                  <span className="carrusel-price-new">{fmtPeso(p.precio_oferta)}</span>
+                </div>
+                <a href={`https://wa.me/${waNumber}?text=Hola%2C%20me%20interesa%20${encodeURIComponent(p.nombre)}`} target="_blank" rel="noreferrer">
+                  <button className="carrusel-cta">💬 Consultar →</button>
+                </a>
               </div>
             </div>
 
-            {/* Número slide */}
-            <div style={{position:"absolute",top:16,right:16,color:"rgba(255,255,255,0.4)",fontSize:12,fontWeight:700,zIndex:1}}>
-              {i + 1} / {promos.length}
-            </div>
+            {/* Caja ahorro */}
+            {p.precio_original && (
+              <div className="carrusel-deco">
+                <div className="carrusel-deco-box">
+                  <div className="lbl">Ahorra con tu descuento</div>
+                  <div className="num">{fmtPeso(p.precio_original)}</div>
+                  <div className="sep">↓</div>
+                  <div className="price">{fmtPeso(p.precio_oferta)}</div>
+                  <div className="save">Ahorras {fmtPeso(p.precio_original - p.precio_oferta)}</div>
+                </div>
+              </div>
+            )}
+
+            <div className="carrusel-counter">{i+1}/{promos.length}</div>
           </div>
         ))}
       </div>
-
-      {/* Botones prev/next */}
       {promos.length > 1 && (<>
-        <button className="carrusel-btn carrusel-btn-prev" onClick={() => reset(() => goTo(idx - 1))}>‹</button>
-        <button className="carrusel-btn carrusel-btn-next" onClick={() => reset(() => goTo(idx + 1))}>›</button>
+        <button className="carrusel-btn carrusel-btn-prev" onClick={()=>reset(()=>goTo(idx-1))}>‹</button>
+        <button className="carrusel-btn carrusel-btn-next" onClick={()=>reset(()=>goTo(idx+1))}>›</button>
         <div className="carrusel-dots">
-          {promos.map((_, i) => (
-            <div key={i} className={`carrusel-dot ${i === idx ? "active" : ""}`} onClick={() => reset(() => setIdx(i))}/>
+          {promos.map((_,i)=>(
+            <div key={i} className={`carrusel-dot ${i===idx?"active":""}`} onClick={()=>reset(()=>setIdx(i))}/>
           ))}
         </div>
       </>)}
