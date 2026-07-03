@@ -139,102 +139,80 @@ const css = `
     text-align: center;
     position: relative;
     overflow: hidden;
-    background: #0a2e1e;
+    background: #f0f0f0;
   }
   .hero-bg {
     position: absolute; inset: 0; z-index: 0;
     background-image: url('https://mzpdgiefwnvviyvslbff.supabase.co/storage/v1/object/public/productos/hero-bg.jpg');
     background-size: cover; background-position: center;
-    opacity: 0.35;
-    filter: saturate(0.7);
   }
   .hero-overlay {
     position: absolute; inset: 0; z-index: 1;
-    background: linear-gradient(180deg, rgba(10,46,30,0.55) 0%, rgba(10,46,30,0.75) 100%);
+    background: rgba(255,255,255,0.78);
   }
   .hero-content { position: relative; z-index: 2; }
   .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12px; font-weight: 600; color: #4ade80;
+    font-size: 12px; font-weight: 600; color: #16a34a;
     letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px;
   }
-  .hero-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; }
+  .hero-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: #16a34a; }
   .hero h1 {
     font-size: clamp(2.8rem, 5vw, 4.5rem);
-    font-weight: 700; color: #ffffff; line-height: 1.05;
+    font-weight: 700; color: #0a0a0a; line-height: 1.05;
     letter-spacing: -2px; max-width: 700px; margin: 0 auto 18px;
   }
-  .hero h1 span { color: #4ade80; }
+  .hero h1 span { color: #16a34a; }
   .hero-sub {
-    font-size: 17px; color: rgba(255,255,255,0.65); max-width: 440px;
+    font-size: 17px; color: #444; max-width: 440px;
     margin: 0 auto 40px; line-height: 1.6; font-weight: 400;
   }
   .hero-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 64px; }
   .btn-primary {
-    padding: 12px 24px; background: #4ade80; color: #0a2e1e;
-    border-radius: 10px; font-size: 14px; font-weight: 700;
+    padding: 12px 24px; background: #0a2e1e; color: white;
+    border-radius: 10px; font-size: 14px; font-weight: 600;
     transition: all 0.2s; display: inline-flex; align-items: center; gap: 7px;
   }
-  .btn-primary:hover { background: #22c55e; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(74,222,128,0.35); }
+  .btn-primary:hover { background: #16a34a; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(10,46,30,0.25); }
   .btn-secondary {
-    padding: 12px 24px; background: rgba(255,255,255,0.1); color: white;
+    padding: 12px 24px; background: rgba(0,0,0,0.07); color: #1a1a1a;
     border-radius: 10px; font-size: 14px; font-weight: 600;
-    border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;
+    border: 1px solid rgba(0,0,0,0.12); transition: all 0.2s;
   }
-  .btn-secondary:hover { background: rgba(255,255,255,0.18); }
+  .btn-secondary:hover { background: rgba(0,0,0,0.13); }
   .hero-stats {
     display: flex; gap: 0; justify-content: center;
-    border: 1px solid rgba(255,255,255,0.15); border-radius: 14px;
+    border: 1px solid rgba(0,0,0,0.1); border-radius: 14px;
     overflow: hidden; max-width: 480px; margin: 0 auto;
-    background: rgba(255,255,255,0.06); backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.75); backdrop-filter: blur(10px);
   }
-  .hero-stat { flex: 1; padding: 18px 24px; text-align: center; border-right: 1px solid rgba(255,255,255,0.1); }
+  .hero-stat { flex: 1; padding: 18px 24px; text-align: center; border-right: 1px solid rgba(0,0,0,0.08); }
   .hero-stat:last-child { border-right: none; }
-  .hero-stat-num { font-size: 24px; font-weight: 700; color: #4ade80; letter-spacing: -0.5px; }
-  .hero-stat-lbl { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 500; margin-top: 2px; }
+  .hero-stat-num { font-size: 24px; font-weight: 700; color: #0a2e1e; letter-spacing: -0.5px; }
+  .hero-stat-lbl { font-size: 11px; color: #888; font-weight: 500; margin-top: 2px; }
 
-  .carrusel-wrap { position: relative; overflow: hidden; background: #0a2e1e; }
-  .carrusel-inner { display: flex; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
-  .carrusel-slide {
-    min-width: 100%; display: flex; align-items: center;
-    padding: 16px 56px 20px 24px; gap: 20px; min-height: 100px; position: relative;
+  /* ── SECCIÓN OFERTAS ── */
+  .ofertas-section { background: #0a2e1e; padding: 32px 24px; }
+  .ofertas-inner { max-width: 1100px; margin: 0 auto; }
+  .ofertas-hd { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .ofertas-title { font-size: 15px; font-weight: 700; color: white; }
+  .ofertas-badge { background: #dc2626; color: white; font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 5px; letter-spacing: 1px; text-transform: uppercase; }
+  .ofertas-count { font-size: 12px; color: rgba(255,255,255,0.4); }
+  .ofertas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 12px; }
+  .oferta-card {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; overflow: hidden; transition: all 0.2s;
   }
-  .carrusel-slide::after { content:''; position:absolute; inset:0; background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, transparent 60%); }
-  .carrusel-img {
-    width: 80px; height: 80px; border-radius: 10px; flex-shrink: 0;
-    background: rgba(255,255,255,0.08); overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-  .carrusel-img img { width:100%; height:100%; object-fit:contain; padding:8px; }
-  .carrusel-body { flex: 1; }
-  .carrusel-tag { font-size: 10px; font-weight: 700; color: #4ade80; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-  .carrusel-name { font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 6px; line-height: 1.2; }
-  .carrusel-prices { display: flex; align-items: center; gap: 12px; }
-  .carrusel-old { font-size: 13px; color: rgba(255,255,255,0.4); text-decoration: line-through; }
-  .carrusel-new { font-size: 1.3rem; font-weight: 800; color: #4ade80; }
-  .carrusel-save {
-    flex-shrink: 0; background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-    padding: 10px 16px; text-align: center; min-width: 120px;
-  }
-  .carrusel-save-lbl { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-  .carrusel-save-num { font-size: 1rem; font-weight: 700; color: white; }
-  .carrusel-save-price { font-size: 1.1rem; font-weight: 800; color: #4ade80; margin: 1px 0; }
-  .carrusel-save-badge { background: rgba(74,222,128,0.15); color: #4ade80; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px; display: inline-block; margin-top: 3px; }
-  .carr-btn {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    width: 28px; height: 28px; border-radius: 50%;
-    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
-    color: white; font-size: 13px; cursor: pointer; z-index: 10;
-    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-  }
-  .carr-btn:hover { background: rgba(255,255,255,0.2); }
-  .carr-btn-l { left: 8px; }
-  .carr-btn-r { right: 8px; }
-  .carr-dots { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; }
-  .carr-dot { width: 4px; height: 4px; border-radius: 100px; background: rgba(255,255,255,0.3); transition: all 0.3s; cursor: pointer; }
-  .carr-dot.on { background: white; width: 14px; }
+  .oferta-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); border-color: rgba(74,222,128,0.3); }
+  .oferta-img { width: 100%; aspect-ratio: 1/1; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .oferta-img img { width:100%; height:100%; object-fit:contain; padding:12px; transition: transform 0.3s; }
+  .oferta-card:hover .oferta-img img { transform: scale(1.05); }
+  .oferta-body { padding: 10px 12px 12px; }
+  .oferta-name { font-size: 12.5px; font-weight: 600; color: white; margin-bottom: 8px; line-height: 1.3; }
+  .oferta-prices { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+  .oferta-old { font-size: 11px; color: rgba(255,255,255,0.35); text-decoration: line-through; }
+  .oferta-new { font-size: 16px; font-weight: 800; color: #4ade80; }
+  .oferta-save { margin-top: 5px; font-size: 10px; font-weight: 700; color: #4ade80; background: rgba(74,222,128,0.12); padding: 2px 7px; border-radius: 4px; display: inline-block; }
 
   /* ── SECCIÓN ── */
   .section { padding: 80px 24px; }
@@ -460,50 +438,74 @@ function WAFloat() {
 }
 
 // ── CARRUSEL ─────────────────────────────────────────────────
-function Carrusel({ promos }) {
+function OfertasGrid({ promos }) {
   const [idx, setIdx] = useState(0);
   const timer = useRef(null);
-  const go = (i) => setIdx((i + promos.length) % promos.length);
-  const reset = (fn) => { clearInterval(timer.current); fn(); timer.current = setInterval(() => setIdx(p => (p+1) % promos.length), 5000); };
-  useEffect(() => { timer.current = setInterval(() => setIdx(p => (p+1) % promos.length), 5000); return () => clearInterval(timer.current); }, [promos.length]);
+  const visible = 4;
+  const max = Math.max(0, promos.length - visible);
+
+  const go = (dir) => {
+    clearInterval(timer.current);
+    setIdx(i => Math.min(Math.max(i + dir, 0), max));
+    timer.current = setInterval(() => setIdx(i => i >= max ? 0 : i + 1), 4000);
+  };
+
+  useEffect(() => {
+    if (promos.length <= visible) return;
+    timer.current = setInterval(() => setIdx(i => i >= max ? 0 : i + 1), 4000);
+    return () => clearInterval(timer.current);
+  }, [promos.length, max]);
+
+  if (!promos.length) return null;
+
   return (
-    <div className="carrusel-wrap">
-      <div className="carrusel-inner" style={{ transform: `translateX(-${idx*100}%)` }}>
-        {promos.map((p, i) => (
-          <div className="carrusel-slide" key={p.id}>
-            <div className="carrusel-img">
-              {p.foto_url
-                ? <img src={p.foto_url} alt={p.nombre} onError={e => { e.target.style.display="none"; }}/>
-                : <span style={{fontSize:36}}>🔥</span>
-              }
+    <div className="ofertas-section">
+      <div className="ofertas-inner">
+        <div className="ofertas-hd">
+          <span className="ofertas-title">Productos en oferta</span>
+          <span className="ofertas-badge">OFERTAS</span>
+          <span className="ofertas-count">{promos.length} {promos.length === 1 ? "producto" : "productos"}</span>
+          {promos.length > visible && (
+            <div style={{marginLeft:"auto",display:"flex",gap:6}}>
+              <button onClick={()=>go(-1)} disabled={idx===0} style={{width:28,height:28,borderRadius:"50%",background:idx===0?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.15)",color:"white",cursor:idx===0?"default":"pointer",fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.2s"}}>‹</button>
+              <button onClick={()=>go(1)} disabled={idx>=max} style={{width:28,height:28,borderRadius:"50%",background:idx>=max?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.15)",color:"white",cursor:idx>=max?"default":"pointer",fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.2s"}}>›</button>
             </div>
-            <div className="carrusel-body">
-              <div className="carrusel-tag">Oferta especial</div>
-              <div className="carrusel-name">{p.nombre}</div>
-              <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
-                <div className="carrusel-prices">
-                  {p.precio_original && <span className="carrusel-old">{fmtPeso(p.precio_original)}</span>}
-                  <span className="carrusel-new">{fmtPeso(p.precio_oferta)}</span>
+          )}
+        </div>
+        <div style={{overflow:"hidden"}}>
+          <div style={{display:"flex",gap:12,transition:"transform 0.4s cubic-bezier(0.4,0,0.2,1)",transform:`translateX(calc(-${idx} * (100% / ${visible} + 3px)))`}}>
+            {promos.map(p => (
+              <div key={p.id} style={{minWidth:`calc(${100/visible}% - ${12*(visible-1)/visible}px)`,flexShrink:0}}>
+                <div className="oferta-card">
+                  <div className="oferta-img">
+                    {p.foto_url
+                      ? <img src={p.foto_url} alt={p.nombre} onError={e=>e.target.style.display="none"}/>
+                      : <span style={{fontSize:32,opacity:0.3}}>🔥</span>
+                    }
+                  </div>
+                  <div className="oferta-body">
+                    <div className="oferta-name">{p.nombre}</div>
+                    <div className="oferta-prices">
+                      {p.precio_original && <span className="oferta-old">{fmtPeso(p.precio_original)}</span>}
+                      <span className="oferta-new">{fmtPeso(p.precio_oferta)}</span>
+                    </div>
+                    {p.precio_original && (
+                      <div className="oferta-save">Ahorras {fmtPeso(p.precio_original - p.precio_oferta)}</div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-            {p.precio_original && (
-              <div className="carrusel-save">
-                <div className="carrusel-save-lbl">Descuento</div>
-                <div className="carrusel-save-num">{fmtPeso(p.precio_original)}</div>
-                <div className="carrusel-save-price">{fmtPeso(p.precio_oferta)}</div>
-                <div className="carrusel-save-badge">Ahorra {fmtPeso(p.precio_original - p.precio_oferta)}</div>
-              </div>
-            )}
-            <div style={{position:"absolute",top:12,right:16,fontSize:11,color:"rgba(255,255,255,0.3)",fontWeight:600}}>{i+1}/{promos.length}</div>
+            ))}
           </div>
-        ))}
+        </div>
+        {promos.length > visible && (
+          <div style={{display:"flex",justifyContent:"center",gap:4,marginTop:14}}>
+            {Array.from({length:max+1}).map((_,i)=>(
+              <div key={i} onClick={()=>{clearInterval(timer.current);setIdx(i);}} style={{width:i===idx?16:5,height:5,borderRadius:100,background:i===idx?"white":"rgba(255,255,255,0.25)",cursor:"pointer",transition:"all 0.3s"}}/>
+            ))}
+          </div>
+        )}
       </div>
-      {promos.length > 1 && (<>
-        <button className="carr-btn carr-btn-l" onClick={() => reset(() => go(idx-1))}>‹</button>
-        <button className="carr-btn carr-btn-r" onClick={() => reset(() => go(idx+1))}>›</button>
-        <div className="carr-dots">{promos.map((_,i) => <div key={i} className={`carr-dot ${i===idx?"on":""}`} onClick={() => reset(() => setIdx(i))}/>)}</div>
-      </>)}
     </div>
   );
 }
@@ -557,8 +559,8 @@ function Landing({ productos, categorias, promos, wa, direccion }) {
         </div>
       </section>
 
-      {/* CARRUSEL */}
-      {promos.length > 0 && <Carrusel promos={promos}/>}
+      {/* OFERTAS GRID */}
+      {promos.length > 0 && <OfertasGrid promos={promos}/>}
 
       {/* CÓMO FUNCIONA */}
       <section className="section how-section">
