@@ -562,7 +562,7 @@ function Landing({ productos, categorias, promos, wa, direccion }) {
   const [catSel, setCatSel] = useState("all");
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState({});
-  const [form, setForm] = useState({ nombre:"", email:"", tipo:"consulta", mensaje:"" });
+  const [form, setForm] = useState({ nombre:"", email:"", telefono:"", tipo:"consulta", mensaje:"" });
   const [sending, setSending] = useState(false);
   const [toast, setToast] = useState(null);
   const catalogRef = useRef(null);
@@ -580,9 +580,9 @@ function Landing({ productos, categorias, promos, wa, direccion }) {
     setSending(true);
     await supabase.from("contacto_mensajes").insert({ nombre_contacto:form.nombre, email_contacto:form.email, tipo:form.tipo, mensaje:form.mensaje });
     const tipoLabel = form.tipo === "reclamo" ? "⚠️ Reclamo" : form.tipo === "sugerencia" ? "💡 Sugerencia" : "💬 Consulta";
-    const waMsg = `${tipoLabel} desde javivi.cl\n\n*Nombre:* ${form.nombre}${form.email?`\n*Email:* ${form.email}`:""}\n\n*Mensaje:*\n${form.mensaje}`;
+    const waMsg = `${tipoLabel} desde javivi.cl\n\n*Nombre:* ${form.nombre}${form.telefono?`\n*Teléfono:* ${form.telefono}`:""} ${form.email?`\n*Email:* ${form.email}`:""}\n\n*Mensaje:*\n${form.mensaje}`;
     window.open(`https://wa.me/${wa}?text=${encodeURIComponent(waMsg)}`,"_blank");
-    setForm({ nombre:"", email:"", tipo:"consulta", mensaje:"" });
+    setForm({ nombre:"", email:"", telefono:"", tipo:"consulta", mensaje:"" });
     setToast("Mensaje enviado. Te responderemos pronto.");
     setSending(false);
   };
@@ -738,6 +738,7 @@ function Landing({ productos, categorias, promos, wa, direccion }) {
             <div>
               <div className="form-group"><label className="form-label">Nombre *</label><input className="form-input" placeholder="María González" value={form.nombre} onChange={e=>setForm({...form,nombre:e.target.value})}/></div>
               <div className="form-group"><label className="form-label">Email (opcional)</label><input className="form-input" type="email" placeholder="tu@correo.cl" value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></div>
+              <div className="form-group"><label className="form-label">Teléfono (opcional)</label><input className="form-input" type="tel" placeholder="+56 9 1234 5678" value={form.telefono} onChange={e=>setForm({...form,telefono:e.target.value})}/></div>
               <div className="form-group"><label className="form-label">Tipo</label>
                 <select className="form-input" value={form.tipo} onChange={e=>setForm({...form,tipo:e.target.value})}>
                   <option value="consulta">Consulta</option>
