@@ -298,14 +298,27 @@ const css = `
   .empty-state p { font-size: 15px; margin-top: 12px; }
 
   /* ── CÓMO FUNCIONA ── */
-  .how-section { background: #fafaf9; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; }
-  .how-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: #e8e8e8; border: 1px solid #e8e8e8; border-radius: 14px; overflow: hidden; }
-  .how-item { background: #fafaf9; padding: 32px 28px; transition: background 0.15s; }
-  .how-item:hover { background: #fff; }
-  .how-num { font-size: 11px; font-weight: 700; color: #16a34a; letter-spacing: 2px; margin-bottom: 12px; }
-  .how-icon { font-size: 24px; margin-bottom: 10px; }
-  .how-title { font-size: 15px; font-weight: 600; color: #0a0a0a; margin-bottom: 6px; }
-  .how-desc { font-size: 13px; color: #888; line-height: 1.65; }
+  .how-section { background: #0a2e1e; padding: 80px 24px; position: relative; overflow: hidden; }
+  .how-section::before { content:''; position:absolute; top:-100px; right:-100px; width:400px; height:400px; border-radius:50%; background:rgba(74,222,128,0.04); pointer-events:none; }
+  .how-section::after { content:''; position:absolute; bottom:-80px; left:-80px; width:300px; height:300px; border-radius:50%; background:rgba(74,222,128,0.03); pointer-events:none; }
+  .how-inner { max-width:1100px; margin:0 auto; position:relative; z-index:1; }
+  .how-hd { text-align:center; margin-bottom:56px; }
+  .how-hd-tag { display:inline-block; font-size:11px; font-weight:700; color:#4ade80; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
+  .how-hd h2 { font-size:clamp(1.8rem,3.5vw,2.4rem); font-weight:700; color:white; letter-spacing:-0.5px; margin-bottom:10px; }
+  .how-hd p { font-size:15px; color:rgba(255,255,255,0.45); }
+  .how-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; background:rgba(255,255,255,0.06); border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.08); }
+  .how-step { padding:40px 32px; background:#0a2e1e; transition:background 0.2s; position:relative; }
+  .how-step:hover { background:rgba(255,255,255,0.04); }
+  .how-step-num { font-size:11px; font-weight:800; color:#4ade80; letter-spacing:3px; margin-bottom:20px; opacity:0.7; }
+  .how-step-icon { width:52px; height:52px; border-radius:14px; background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.2); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:20px; }
+  .how-step h3 { font-size:17px; font-weight:700; color:white; margin-bottom:10px; }
+  .how-step p { font-size:13.5px; color:rgba(255,255,255,0.5); line-height:1.7; }
+  .how-step-arrow { position:absolute; top:50%; right:-1px; transform:translateY(-50%); width:20px; height:20px; display:flex; align-items:center; justify-content:center; color:rgba(74,222,128,0.3); font-size:16px; z-index:2; }
+  .how-step:last-child .how-step-arrow { display:none; }
+  .how-bottom { margin-top:40px; display:flex; align-items:center; justify-content:center; gap:32px; padding:24px; background:rgba(255,255,255,0.03); border-radius:14px; border:1px solid rgba(255,255,255,0.06); flex-wrap:wrap; }
+  .how-bottom-item { display:flex; align-items:center; gap:10px; font-size:14px; color:rgba(255,255,255,0.6); }
+  .how-bottom-item strong { color:white; }
+  .how-bottom-dot { width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,0.2); }
 
   /* ── CONTACTO ── */
   .contact-section { background: #fff; border-top: 1px solid #f0f0f0; }
@@ -566,6 +579,9 @@ function Landing({ productos, categorias, promos, wa, direccion }) {
     if (!form.nombre.trim() || !form.mensaje.trim()) { setToast("Completa tu nombre y mensaje"); return; }
     setSending(true);
     await supabase.from("contacto_mensajes").insert({ nombre_contacto:form.nombre, email_contacto:form.email, tipo:form.tipo, mensaje:form.mensaje });
+    const tipoLabel = form.tipo === "reclamo" ? "⚠️ Reclamo" : form.tipo === "sugerencia" ? "💡 Sugerencia" : "💬 Consulta";
+    const waMsg = `${tipoLabel} desde javivi.cl\n\n*Nombre:* ${form.nombre}${form.email?`\n*Email:* ${form.email}`:""}\n\n*Mensaje:*\n${form.mensaje}`;
+    window.open(`https://wa.me/${wa}?text=${encodeURIComponent(waMsg)}`,"_blank");
     setForm({ nombre:"", email:"", tipo:"consulta", mensaje:"" });
     setToast("Mensaje enviado. Te responderemos pronto.");
     setSending(false);
@@ -597,25 +613,37 @@ function Landing({ productos, categorias, promos, wa, direccion }) {
       {promos.length > 0 && <OfertasGrid promos={promos}/>}
 
       {/* CÓMO FUNCIONA */}
-      <section className="section how-section">
-        <div className="section-inner">
-          <div className="section-hd">
-            <h2>¿Cómo funciona?</h2>
-            <p>Simple y transparente — sin apps, sin registros complicados</p>
+      <section className="how-section">
+        <div className="how-inner">
+          <div className="how-hd">
+            <div className="how-hd-tag">Sistema de puntos</div>
+            <h2>Simple desde el primer día</h2>
+            <p>Sin apps, sin formularios — solo compra y acumula</p>
           </div>
-          <div className="how-grid">
-            {[["01","🛒","Compra","Realiza tus compras habituales en el minimarket."],
-              ["02","⭐","Acumula","Suma puntos con cada visita. Consulta tu saldo en tienda."],
-              ["03","🎁","Elige","Revisa el catálogo y escoge el producto que más te guste."],
-              ["04","🏪","Canjea","Visítanos con tu nombre. El canje es presencial e inmediato."]
-            ].map(([n,ic,t,d]) => (
-              <div className="how-item" key={n}>
-                <div className="how-num">{n}</div>
-                <div className="how-icon">{ic}</div>
-                <div className="how-title">{t}</div>
-                <div className="how-desc">{d}</div>
+          <div className="how-steps">
+            {[
+              ["01","🛒","Compra en Javivi","Realiza tus compras habituales. Cada visita al minimarket suma puntos a tu cuenta automáticamente."],
+              ["02","⭐","Acumula puntos","Tu saldo crece con cada compra. Consulta en tienda cuántos puntos tienes disponibles en cualquier momento."],
+              ["03","🎁","Elige tu premio","Revisa el catálogo completo y escoge el producto que más te guste según tus puntos actuales."],
+              ["04","🏪","Canjea en tienda","Visítanos con tu nombre y retira tu premio de inmediato. Sin esperas, sin complicaciones."],
+            ].map(([n,ic,t,d],i,arr) => (
+              <div className="how-step" key={n}>
+                <div className="how-step-num">{n}</div>
+                <div className="how-step-icon">{ic}</div>
+                <h3>{t}</h3>
+                <p>{d}</p>
+                {i < arr.length-1 && <div className="how-step-arrow">›</div>}
               </div>
             ))}
+          </div>
+          <div className="how-bottom">
+            <div className="how-bottom-item">✅ <strong>Sin registro</strong> — solo tu nombre</div>
+            <div className="how-bottom-dot"/>
+            <div className="how-bottom-item">✅ <strong>Sin app</strong> — todo en tienda</div>
+            <div className="how-bottom-dot"/>
+            <div className="how-bottom-item">✅ <strong>Sin costo</strong> — el canje es gratis</div>
+            <div className="how-bottom-dot"/>
+            <div className="how-bottom-item">✅ <strong>Sin vencimiento</strong> — tus puntos no expiran</div>
           </div>
         </div>
       </section>
