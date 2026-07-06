@@ -128,7 +128,7 @@ const css = `
   }
   .ticker-inner {
     display: inline-flex; gap: 0;
-    animation: ticker 20s linear infinite;
+    animation: ticker 35s linear infinite;
   }
   .ticker-inner:hover { animation-play-state: paused; }
   @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
