@@ -255,44 +255,49 @@ const css = `
   .search-bar svg { flex-shrink: 0; }
 
   /* ── GRID PRODUCTOS ── */
-  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 20px; }
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 16px; }
   .prod-card {
-    background: #fff; border-radius: 14px; overflow: hidden;
-    border: 1px solid #e8e8e8; transition: all 0.2s; position: relative;
+    background: #fff; border-radius: 16px; overflow: hidden; position: relative;
+    border: 1px solid #ebebeb; transition: all 0.22s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    display: flex; flex-direction: column;
   }
-  .prod-card:hover { border-color: #d1d1d1; box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
-
-  /* Imagen 60% — fondo gris suave */
+  .prod-card:hover { border-color: #bbf7d0; box-shadow: 0 10px 28px rgba(10,46,30,0.1); transform: translateY(-3px); }
   .prod-img {
-    width: 100%; aspect-ratio: 4/3; overflow: hidden;
-    background: #f5f5f5;
-    display: flex; align-items: center; justify-content: center;
+    width: 100%; height: 200px; overflow: hidden;
+    background: #fff; border-bottom: 1px solid #f5f5f5;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .prod-img img { width:100%; height:100%; object-fit:contain; padding:20px; transition: transform 0.3s; }
-  .prod-card:hover .prod-img img { transform: scale(1.04); }
-  .prod-placeholder { font-size: 56px; opacity: 0.2; }
+  .prod-img img { width:100%; height:100%; object-fit:contain; padding:18px; transition: transform 0.35s; }
+  .prod-card:hover .prod-img img { transform: scale(1.05); }
+  .prod-placeholder { font-size: 56px; opacity: 0.15; }
   .dest-pill {
     position: absolute; top: 10px; left: 10px;
     background: #0a2e1e; color: #4ade80;
     font-size: 9px; font-weight: 700; padding: 3px 9px;
-    border-radius: 4px; letter-spacing: 1px; z-index: 2;
-    text-transform: uppercase;
+    border-radius: 4px; letter-spacing: 1px; z-index: 2; text-transform: uppercase;
   }
-
-  /* Info */
-  .prod-body { padding: 14px 16px 16px; }
-  .prod-cat { font-size: 10px; font-weight: 600; color: #16a34a; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
-  .prod-name { font-size: 14px; font-weight: 600; color: #0a0a0a; line-height: 1.35; margin-bottom: 4px; }
-  .prod-desc { font-size: 12.5px; color: #999; line-height: 1.55; }
+  .prod-body { padding: 12px 14px 16px; flex: 1; display: flex; flex-direction: column; }
+  .prod-cat {
+    font-size: 10px; font-weight: 700; color: #16a34a;
+    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .prod-cat::before { content:''; width:5px; height:5px; border-radius:50%; background:#16a34a; flex-shrink:0; }
+  .prod-name { font-size: 14px; font-weight: 600; color: #111; line-height: 1.4; margin-bottom: 5px; }
+  .prod-desc { font-size: 12px; color: #bbb; line-height: 1.6; flex: 1; }
   .prod-desc-short { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .prod-toggle { background: none; border: none; color: #16a34a; font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px 0 8px; display: block; }
+  .prod-toggle { background: none; border: none; color: #16a34a; font-size: 11.5px; font-weight: 600; cursor: pointer; padding: 3px 0 6px; display: block; }
   .prod-toggle:hover { color: #0a2e1e; }
-
-  /* Badge puntos — minimalista */
-  .pts-wrap { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
-  .pts-icon { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg,#fbbf24,#f59e0b); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
-  .pts-num { font-size: 17px; font-weight: 800; color: #0a0a0a; letter-spacing: -0.5px; }
-  .pts-lbl { font-size: 11px; color: #aaa; font-weight: 500; }
+  .pts-wrap {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 12px; padding: 10px 12px;
+    background: #f9fafb; border-radius: 10px;
+    border: 1px solid #f0f0f0;
+  }
+  .pts-icon { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#fbbf24,#f59e0b); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(245,158,11,0.3); }
+  .pts-num { font-size: 19px; font-weight: 800; color: #0a0a0a; letter-spacing: -0.5px; line-height: 1; }
+  .pts-lbl { font-size: 11px; color: #bbb; font-weight: 500; margin-top: 1px; letter-spacing: 0.3px; }
 
   .empty-state { text-align: center; padding: 80px 24px; color: #bbb; grid-column: 1/-1; }
   .empty-state p { font-size: 15px; margin-top: 12px; }
@@ -1109,7 +1114,19 @@ export default function App() {
   const [categorias, setCategorias] = useState([]);
   const [promos, setPromos] = useState([]);
   const [toast, setToast] = useState(null);
+  const [mensajesPendientes, setMensajesPendientes] = useState(0);
   const [siteConfig, setSiteConfig] = useState({ nombre_negocio:"Minimarket Javivi", direccion:"", telefono_whatsapp: WHATSAPP });
+
+  const checkMensajes = () => {
+    supabase.from("contacto_mensajes").select("id",{count:"exact"}).eq("estado","pendiente")
+      .then(({count}) => setMensajesPendientes(count||0));
+  };
+
+  useEffect(() => {
+    checkMensajes();
+    const t = setInterval(checkMensajes, 30000);
+    return () => clearInterval(t);
+  }, []);
 
   const loadPublicData = () => {
     Promise.all([
@@ -1153,8 +1170,13 @@ export default function App() {
         <div className="nav-links">
           <button className="nav-link" onClick={()=>document.getElementById("catalogo-section")?.scrollIntoView({behavior:"smooth"})}>Catálogo</button>
           <button className="nav-link" onClick={()=>document.getElementById("contacto-section")?.scrollIntoView({behavior:"smooth"})}>Contacto</button>
-          <div className="nav-admin-btn" onClick={()=>setView("admin")}>
+          <div className="nav-admin-btn" onClick={()=>setView("admin")} style={{position:"relative"}}>
             ⚙️
+            {mensajesPendientes > 0 && (
+              <span style={{position:"absolute",top:-4,right:-4,background:"#dc2626",color:"white",fontSize:10,fontWeight:800,width:16,height:16,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",lineHeight:1}}>
+                {mensajesPendientes > 9 ? "9+" : mensajesPendientes}
+              </span>
+            )}
             <div className="tooltip">Módulo de administración</div>
           </div>
         </div>
